@@ -17,12 +17,12 @@
           <!-- <h2 class="title">iMX</h2> -->
           <h2 class="title">Bees SCRM</h2>
         </div>
-        <div class="account_type">
+        <!-- <div class="account_type">
           <span class="left_text">{{$t('sys_l057')}}</span>
           <el-radio-group v-model="loginForm.seatName" @change="changeAccount">
             <el-radio border v-for="(item, idx) in accountOption" v-show="item != ''" :key="idx" :label="idx">{{ item }}</el-radio>
           </el-radio-group>
-        </div>
+        </div> -->
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
           <el-form-item label="" prop="username">
             <el-input v-model="loginForm.username" :placeholder="$t('sys_l006')" auto-complete="on">

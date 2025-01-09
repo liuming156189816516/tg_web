@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item class="el-item-right">
         <el-button type="danger" :disabled="checkIdArry.length==0" @click="batchDel">{{ $t('sys_l048') }}</el-button>
-        <el-button type="warning" :disabled="checkIdArry.length==0" @click="exportModel=true">{{ $t('sys_mat050') }}</el-button>
+        <!-- <el-button type="warning" :disabled="checkIdArry.length==0" @click="exportModel=true">{{ $t('sys_mat050') }}</el-button> -->
         <el-button type="success" style="margin-left: 10px;" @click="batchExport"> {{ $t('sys_c111') }}</el-button>
       </el-form-item>
     </el-form>
@@ -41,12 +41,6 @@
           <el-table-column type="selection" width="55" />
           <el-table-column prop="name" show-overflow-tooltip :label="$t('sys_l056')" minWidth="140" />
           <el-table-column prop="acc_type" :label="$t('sys_l057')" minWidth="100" />
-          <el-table-column prop="account_type" :label="$t('sys_l058')" minWidth="100" >
-            <template slot-scope="scope">
-              <!-- {{ accountOption[scope.row.account_type] }} -->
-              {{ deviceOption[scope.row.account_type] }}
-            </template>
-          </el-table-column>
           <el-table-column prop="status" :label="$t('sys_l059')" minWidth="100">
             <template slot-scope="scope">
               <el-tag :type="scope.row.status==1?'warning':'success'" size="small"> {{ taskOption[scope.row.status] }}</el-tag>
@@ -77,9 +71,9 @@
       </div>
     </div>
     <!-- 新增-->
-    <el-dialog :class="{'custom_dialog':storeIdx==1}" :title="dialog_title" center :visible.sync="storeModel" :close-on-click-modal="false" :width="numModelWidth">
+    <el-dialog :class="{'custom_dialog':storeIdx==1}" :title="dialog_title" center :visible.sync="storeModel" :close-on-click-modal="false" width="600px">
       <el-form ref="accountForm" size="small" :model="accountForm" label-width="0" :rules="accountRules">
-        <template v-if="storeIdx==1">
+        <!-- <template v-if="storeIdx==1">
           <el-row>
             <el-col :span="12">
               <div class="export_type">
@@ -109,8 +103,7 @@
               <el-button class="el-item-right" size="small" type="primary" style="margin-top: 10px;" @click="nextbtn">{{ $t('sys_l069') }}</el-button>
             </el-col>
           </el-row>
-        </template>
-        <template v-else>
+        </template> -->
           <el-row>
             <el-col :span="24"></el-col>
             <el-col :span="24">
@@ -154,24 +147,16 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
-                    <el-form-item prop="protocol_type">
-                        <div class="label_radius_title">{{ $t('sys_l109') }}</div>
-                        <el-radio-group v-model="accountForm.protocol_type">
-                            <el-radio :label="idx" v-for="(item,idx) in protOption" :key="idx">{{ item }}</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                </el-col>
                 <el-col :span="24" >
                     <el-form-item>
                         <div class="label_radius_title">{{ $t('sys_c058') }}</div>
-                        <div>{{ $t('sys_c114') }}</div>
+                        <div>{{ accountForm.data_way==1?$t('sys_c144'):$t('sys_c114') }}</div>
                         <div class="submit_btn">
                             <el-button class="custom_file1" v-if="accountForm.group_id" style="margin-top: 0;">{{ $t('sys_c059') }}
                                 <input type="file" ref='uploadclear' @change="checkDataIsUse" id="uploadFile" title=" " />
                             </el-button>
                             <el-button class="custom_file1" v-else style="margin-top: 0;" @click="submitWayBtn('accountForm')">{{ $t('sys_c059') }}</el-button>
-                            <span class="export_tips" @click="downLoadTemp">
+                            <span class="export_tips" @click="downLoadTemp" v-if="accountForm.data_way==2">
                                 <i class="el-icon-download" />{{ $t('sys_l066') }}
                             </span>
                         </div>
@@ -191,10 +176,10 @@
                   <template v-if="success_number>0||fail_number>0">
                     <div>{{ $t('sys_c115') }}</div>
                     <div v-html="$t('sys_c116',{s_number:success_number,f_number:fail_number})"></div>
-                    <span class="" v-if="success_number==0&&stepsHide" style="display: flex;cursor: pointer; font-size: 12px; align-items: center;color: #209cdf; margin-left: 20px;" @click="exportErrFile">
+                    <!-- <span class="" v-if="success_number==0&&stepsHide" style="display: flex;cursor: pointer; font-size: 12px; align-items: center;color: #209cdf; margin-left: 20px;" @click="exportErrFile">
                       <i class="el-icon-download" />
                       {{ $t('sys_c117') }}
-                    </span>
+                    </span> -->
                   </template>
                   <template v-else>
                     <div style="display: flex;align-items: center;">
@@ -227,7 +212,6 @@
             <el-button v-if="stepsActive==2&&success_number>0" type="primary" @click="exportDataBtn('ipForm')">{{ $t('sys_c121') }}</el-button>
             <el-button v-if="stepsActive==3" type="primary" @click="storeModel=false">{{ $t('sys_c075') }}</el-button>
           </el-form-item>
-        </template>
       </el-form>
     </el-dialog>
 
@@ -267,8 +251,8 @@
 </template>
 <script>
 import { successTips,resetPage } from '@/utils/index'
-import { getaccountfilelist,getaccountgrouplist,doaccountgroup,checkaccountfile,addaccount,getaccountschedule,getaccountloglist,dooutputaccountlog,dobathdelaccountfile } from '@/api/storeroom'
-import { resetTime } from '../../utils'
+import { doaccountgrouptg,getaccountgrouptglist } from '@/api/tgaccount'
+import { getaccountfilelisttg,dobathdelaccountfiletg,checkaccountfiletg,getaccountscheduletg,dooutputaccountlogtg,addaccounttg,getaccountloglisttg} from '@/api/storeroomtg'
 export default {
   data() {
     return {
@@ -314,7 +298,6 @@ export default {
         data_way:1,
         device_type:1,
         export_type:"",
-        protocol_type:0
       },
       randomNum:[1,2,4,8,3,8,4,6,3,8],
       detailModel:false,
@@ -348,10 +331,7 @@ export default {
       }
     },
     accountOption(){
-      return ["",this.$t('sys_mat044'),this.$t('sys_q108')]
-    },
-    protOption(){
-      return [this.$t('sys_l110'),this.$t('sys_l111'),this.$t('sys_l115')]
+      return ["",this.$t('sys_mat039'),this.$t('sys_mat040')]
     }
   },
   created() {
@@ -395,22 +375,22 @@ export default {
         page:this.model1.page,
         limit:this.model1.limit,
         name:this.model1.file_name,
-        start_time: sTime ? this.$baseFun.resetTime(sTime[0], 1) : -1,
-        end_time: sTime ? this.$baseFun.resetTime(sTime[1], 1) : -1
+        start_time: sTime ? this.$baseFun.mexicoTime(sTime[0], 1) : -1,
+        end_time: sTime ? this.$baseFun.mexicoTime(sTime[1], 2) : -1
       }
-      getaccountfilelist(params).then(res => {
+      getaccountfilelisttg(params).then(res => {
         this.loading=false;
         this.model1.total = res.data.total;
         this.dataList = res.data.list || [];
       })
     },
     async initGroup() {
-      const { data } = await getaccountgrouplist({ page: 1, limit: 100 });
+      const { data } = await getaccountgrouptglist({ page: 1, limit: 100 });
       this.groupOption = data.list || [];
     },
     async addGroup() {
       this.groupLoading=true;
-      const result = await doaccountgroup({ ptype: 1,name: this.accountForm.group_name});
+      const result = await doaccountgrouptg({ ptype: 1,name: this.accountForm.group_name});
       this.groupLoading=false;
       if (result.code !== 0) return;
       this.visible = false;
@@ -422,16 +402,16 @@ export default {
     },
     batchExport(){
       this.storeModel = true;
-      this.$nextTick(()=>{
-        this.storeIdx=1;
-        this.numModelWidth="600px";
-        this.dialog_title = this.$t('sys_mat043');
-      })
+      // this.$nextTick(()=>{
+      //   this.storeIdx=1;
+      //   this.numModelWidth="600px";
+      //   this.dialog_title = this.$t('sys_mat043');
+      // })
     },
-    nextbtn(){
-      this.storeIdx = 2;
-      this.dialog_title =`${this.$t('sys_l065')}-${this.deviceOption[this.deviceType]}-${this.$t('sys_mat045')}`;
-    },
+    // nextbtn(){
+    //   this.storeIdx = 2;
+    //   this.dialog_title =`${this.$t('sys_l065')}-${this.deviceOption[this.deviceType]}-${this.$t('sys_mat045')}`;
+    // },
     changeType(idx){
       this.deviceType=idx;
     },
@@ -450,7 +430,7 @@ export default {
       this.stepsHide=false;
       this.stepsActive=2;
       this.$refs.uploadclear.value = null;
-      const result = await checkaccountfile(formData);
+      const result = await checkaccountfiletg(formData);
       this.stepsHide=true;
       if (result.code != 0) return;
       this.errFileUrl = result.data.url;
@@ -464,20 +444,19 @@ export default {
         name:this.success_name,
         account_type:this.deviceType,
         success_list:this.success_list,
-        remark:this.accountForm.remark,
-        group_id:this.accountForm.group_id,
         import_type:this.accountForm.data_way,
-        protocol:this.accountForm.protocol_type
+        group_id:this.accountForm.group_id,
+        remark:this.accountForm.remark
       }
       this.startPercent();
       this.fail_number=0;
       this.success_number=0;
       this.stepsHide=false;
       this.checkLoading = true;
-      const result = await addaccount(params);
+      const result = await addaccounttg(params);
       if (result.code != 0) return;
       this.waitTimer = setInterval(async ()=>{
-        const getResult = await getaccountschedule({id:result.data.id})
+        const getResult = await getaccountscheduletg({id:result.data.id})
         if (getResult.code != 0) return;
         if (getResult.data.up_status == 2) {
             this.checkLoading=false;
@@ -535,7 +514,7 @@ export default {
         limit:this.model2.limit,
         file_id:this.model2.file_id
       }
-      getaccountloglist(params).then(res => {
+      getaccountloglisttg(params).then(res => {
         this.model2.total = res.data.total;
         this.model2.data = res.data.list || [];
       })
@@ -552,7 +531,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.isDownLoading=true;
-          dooutputaccountlog({ptype:this.accountForm.export_type,ids:this.checkIdArry}).then(res => {
+          dooutputaccountlogtg({ptype:this.accountForm.export_type,ids:this.checkIdArry}).then(res => {
             this.isDownLoading=false;
             if (res.code != 0) return;
             this.exportModel=false;
@@ -563,30 +542,30 @@ export default {
     },
     batchDel(){
       let that = this;
-			that.$confirm(that.$t('sys_c046',{value:that.$t('sys_c028')}),that.$t('sys_l013'), {
-				type: 'warning',
-				confirmButtonText:that.$t('sys_c024'),
-				cancelButtonText:that.$t('sys_c023'),
-				beforeClose: function (action, instance,done) {
-					if(action === 'confirm') {
+            that.$confirm(that.$t('sys_c046',{value:that.$t('sys_c028')}),that.$t('sys_l013'), {
+                type: 'warning',
+                confirmButtonText:that.$t('sys_c024'),
+                cancelButtonText:that.$t('sys_c023'),
+                beforeClose: function (action, instance,done) {
+                    if(action === 'confirm') {
             instance.confirmButtonLoading = true;
-						dobathdelaccountfile({ids:that.checkIdArry}).then(res =>{
+                        dobathdelaccountfiletg({ids:that.checkIdArry}).then(res =>{
               instance.confirmButtonLoading = false;
-							that.initDatalist();
+                            that.initDatalist();
               successTips(that)
-							done();
-						})
-					}else{
-						done();
+                            done();
+                        })
+                    }else{
+                        done();
             instance.confirmButtonLoading = false;
-					}
-				}
+                    }
+                }
       }).catch(() => {
         that.$message({type: 'info',message:that.$t('sys_c048')});          
       })
     },
     downLoadTemp(){
-      var blob = new Blob(["账号,公钥,私钥,消息公钥,消息私钥,号码ID"], { type: 'text/plain' });
+      var blob = new Blob([`5597981260630----{"api_id": 4, "api_hash": "014b35b6184100b085b0d0572f9b5103", "system_version": "SDK 28", "tz_offset": -7200, "lang_code": "es", "lang_pack": "android", "app_version": "11.5.5 (55319)", "system_lang_code": "es-BR", "device_model": "HTCHTC 2PXH2", "dc": 1, "ip": "149.154.175.50", "port": 443, "auth_key": "Clpr04aXh3mgc/BO7jeNJ1JkyPRho9BQsKXORvHr1FOAE0ehCo2kWu9lZzEKXKBxFdGG6h4il1QLaho5Lk6J/mkgaRricKInv/BZJEBUo1WlWGaFxDShQL+9VMbWRiyUq/0+hghmcrfJMEYhkRP4CNAIyhJs7iuG2dgaLwVDPk/iZcyhAh6+gTM5URYGb2xvKsrXNPe/uQQtr2rzICnqpRK32CQwe3G437ZvJILiqv7+CNUINOPhImYRA0UEWCy/eZyisQeEDWtVDN4jKu9cyl+idUoS+RvQkJxLWnmCa7NWgnka1bo0OThalyQWRKPPld1LLDC6IVUALIUjuKFULg=="}`], { type: 'text/plain' });
       var a = document.createElement('a');
       a.href = window.URL.createObjectURL(blob);
       a.download = "example-wa_export-channe.txt";
@@ -608,7 +587,6 @@ export default {
         this.accountForm.data_way=1;
         this.accountForm.remark="";
         this.accountForm.group_id="";
-        this.accountForm.protocol_type=0;
       }
     },
     exportModel(val){

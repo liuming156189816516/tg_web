@@ -1,27 +1,15 @@
 <template>
     <div style="width:100%;height: 100%; float: left; position: relative;">
-        <!-- 端口管理 -->
-        <el-row :gutter="20">
-            <el-col :span="6" v-for="(item, idx) in allPortList" :key="idx" v-show="item != ''">
-                <el-card>
-                    <div class="refsh_icon" @click="getPortNum">
-                        <i class="el-icon-refresh" size="16"></i>
-                    </div>
-                    <el-button v-if="loadingPort" class="loading_icon" type="primary" :loading="true"></el-button>
-                    <div class="box_card_item" v-else>
-                        <span class="port_title">{{ item.name }}</span>
-                        <span>{{ item.num }}</span>
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>
         <!-- 筛选条件 -->
         <el-form size="small" :inline="true" style="margin-top: 10px;">
             <el-form-item>
                 <el-input clearable :placeholder="$t('sys_g006')" v-model="model1.account" />
             </el-form-item>
             <el-form-item>
-                <el-input clearable :placeholder="$t('sys_g007')" v-model="model1.staff_no" />
+                <el-input clearable :placeholder="$t('sys_mat061',{value:$t('sys_m068')})" v-model="model1.fuser_name" />
+            </el-form-item>
+            <el-form-item>
+                <el-input clearable :placeholder="$t('sys_mat061',{value:$t('sys_q134')})" v-model="model1.fuser_account" />
             </el-form-item>
             <el-form-item class="select_body">
                 <el-select class="select_ele" v-model="model1.select_sort" :placeholder="$t('sys_c052')" @change="initNumberList(1)">
@@ -40,7 +28,7 @@
                 <el-popover placement="bottom" width="500" :offset="195" v-model="visible">
                     <div class="custom_popover">
                         <div class="select_01 select_02" style="margin-bottom: 10px;">
-                            <div v-for="(genre,index) in screenSelect">
+                            <div v-for="(genre,index) in screenSelect" :key="index">
                                 <el-row :gutter="10" style="display: flex; align-items: center; margin-bottom: 10px;">
                                     <el-col :span="24">
                                         <el-col :span="8">
@@ -120,10 +108,10 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
                 <el-button type="warning" :disabled="checkIdArry.length==0" @click="seatHandleBtn">{{ $t('sys_g017')}}</el-button>
-            </el-form-item>
-            <el-form-item>
+            </el-form-item> -->
+            <!-- <el-form-item>
                 <el-dropdown @command="(command)=>{handleCommand(1,command)}" trigger="click">
                     <el-button type="primary"> {{ $t('sys_g054') }}
                         <i class="el-icon-arrow-down el-icon--right"></i>
@@ -135,7 +123,7 @@
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-dropdown @command="(command)=>{handleCommand(2,command)}" trigger="click">
                     <el-button type="primary"> {{ $t('sys_g018') }}
@@ -155,7 +143,7 @@
             <div :class="[!showGroup?'group_mian_hide':'']">
                 <div class="group_head_warp">
                     <div class="group_head" @click="changeGroup(0, 'clear')">
-                        <i class="el-icon-d-arrow-left" @click="showGroup=false"></i>
+                        <i class="el-icon-d-arrow-left" @click.stop="showGroup=false"></i>
                         {{ $t('sys_g049') }} ({{ numGroupTotal }})
                     </div>
                     <div class="group_icon">
@@ -187,7 +175,7 @@
                 <template v-else>
                     <div class="group_warp">
                         <template v-if="numberGroupList.length>0">
-                            <transition-group name="fade">
+                            <!-- <transition name="fade"> -->
                                 <div v-for="(item, idx) in numberGroupList" :key="idx" :draggable="true" :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"  @click="changeGroup(item, idx)" @dragstart="dragStart(idx)" @dragover.prevent @drop="handleMoveSort(idx)">
                                     <div class="group_name">
                                         <i class="left_icon" :class="['left_icon', model1.group_id === item.id ? 'el-icon-folder-opened' : 'el-icon-folder']" />
@@ -203,14 +191,14 @@
                                                 <el-button size="mini" type="text" @click="item.visible = false">{{ $t('sys_c023') }}</el-button>
                                                 <el-button type="primary" :loading="ipLoading" :disabled="!group_name.trim()" size="mini" @click="addGroup(item, 2)">{{ $t('sys_c024') }}</el-button>
                                             </div>
-                                            <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" />
+                                            <i slot="reference" class="el-icon-edit" @click.stop="editGroup(item, 2)" v-if="item.is_default!=1" />
                                         </el-popover>
                                         <el-popconfirm :title="$t('sys_c128')" @confirm="delGroup(item, idx)" :confirm-button-text="$t('sys_c024')" :cancel-button-text="$t('sys_c023')" icon="el-icon-info">
-                                            <i slot="reference" class="el-icon-delete" @click.stop></i>
+                                            <i slot="reference" class="el-icon-delete" @click.stop v-if="item.is_default!=1"></i>
                                         </el-popconfirm>
                                     </div>
                                 </div>
-                            </transition-group>
+                            <!-- </transition> -->
                         </template>
                         <div v-else class="text_empty">{{ $t('sys_mat013') }}</div>
                     </div>
@@ -226,7 +214,7 @@
                     <i class="el-icon-info"></i>
                     <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
                 </div>
-                <u-table @sort-change="sorthandle" :data="accountDataList" row-key="id" use-virtual border :height="cliHeight" v-loading="loading"
+                <u-table @sort-change="sorthandle" :data="accountDataList" row-key="id" use-virtual border height="700" v-loading="loading"
                     element-loading-spinner="el-icon-loading" style="width: 100%;" ref="serveTable" showBodyOverflow="title" :total="model1.total" 
                     :page-sizes="pageOption" :page-size="model1.limit" :current-page="model1.page" :pagination-show="true"
                     @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="switchPage">
@@ -259,34 +247,19 @@
                             <el-tag size="small" :type="handleTag(scope.row.status)"> {{ accountOptions[scope.row.status] }}</el-tag>
                         </template>
                     </u-table-column>
-                    <u-table-column prop="use_status" :label="$t('sys_g023')" minWidth="100">
+                    <u-table-column prop="platform_type" :label="$t('sys_mat066')" minWidth="100">
                         <template slot="header">
-                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,2)">
-                            <span style="color:#909399" :class="[model1.use_status?'dropdown_title':'']"> {{ $t('sys_g023') }}
+                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,6)">
+                            <span style="color:#909399" :class="[model1.platform_type?'dropdown_title':'']"> {{ $t('sys_mat066') }}
                                 <i class="el-icon-arrow-down el-icon--right" />
                             </span>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item :class="{'dropdown_selected':idx==model1.use_status}" v-for="(item,idx) in isUseOptions" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
+                                <el-dropdown-item :class="{'dropdown_selected':idx==model1.platform_type}" v-for="(item,idx) in plantOption" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
                             </el-dropdown-menu>
                             </el-dropdown>
                         </template>
                         <template slot-scope="scope">
-                            <el-tag size="small" :type="scope.row.use_status==1?'success':'danger'"> {{ isUseOptions[scope.row.use_status] }}</el-tag>
-                        </template>
-                    </u-table-column>
-                    <u-table-column prop="staff_no" :label="$t('sys_mat063')" minWidth="100">
-                        <template slot="header">
-                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,4)">
-                                <span style="color:#909399" :class="[model1.staff_status?'dropdown_title':'']"> {{ $t('sys_mat063') }}
-                                    <i class="el-icon-arrow-down el-icon--right" />
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item :class="{'dropdown_selected':idx==model1.staff_status}" v-for="(item,idx) in setOptions" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </template>
-                        <template slot-scope="scope">
-                            <span class="jump_link" @click.stop="jumpServeicBtn(scope.row,1)">{{ scope.row.staff_no?scope.row.staff_no:"-" }}</span>
+                            {{ plantOption[scope.row.platform_type] }}
                         </template>
                     </u-table-column>
                     <u-table-column prop="reason" show-overflow-tooltip :label="$t('sys_g025')" minWidth="100">
@@ -294,24 +267,9 @@
                             <span>{{ scope.row.reason?scope.row.reason:"-" }}</span>
                         </template>
                     </u-table-column>
-                    <u-table-column prop="work_id" :label="$t('sys_l057')" minWidth="200">
+                    <!-- <u-table-column prop="account_type" :label="$t('sys_l057')" minWidth="100">
                         <template slot="header">
-                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,5)">
-                                <span style="color:#909399" :class="[model1.work_status?'dropdown_title':'']"> {{ $t('sys_g074') }}
-                                    <i class="el-icon-arrow-down el-icon--right" />
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item :class="{'dropdown_selected':idx==model1.work_status}" v-for="(item,idx) in setOptions" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </template>
-                        <template slot-scope="scope">
-                            <span class="jump_link" @click.stop="jumpServeicBtn(scope.row,2)">{{ scope.row.work_id||"-" }}</span>
-                        </template>
-                    </u-table-column>
-                    <u-table-column prop="account_type" :label="$t('sys_l057')" minWidth="100">
-                        <template slot="header">
-                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,3)">
+                            <el-dropdown trigger="click" size="medium" @command="(command) => handleNewwork(command,3)">
                                 <span style="color:#909399" :class="[model1.account_type?'dropdown_title':'']"> {{ $t('sys_l057') }}
                                     <i class="el-icon-arrow-down el-icon--right" />
                                 </span>
@@ -321,7 +279,17 @@
                             </el-dropdown>
                         </template>
                         <template slot-scope="scope"> {{ accountType[scope.row.account_type] }}</template>
+                    </u-table-column> -->
+                    <u-table-column prop="fuser_name" :label="$t('sys_m068')" minWidth="100">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.fuser_name||"-" }}</span>
+                        </template>
                     </u-table-column>
+                    <!-- <u-table-column prop="total_time" :label="$t('sys_q143')" minWidth="100">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.total_time||0 }}</span>
+                        </template>
+                    </u-table-column> -->
                     <u-table-column prop="first_login_time" :label="$t('sys_g014')+'/'+$t('sys_g015')" width="180">
                         <template slot-scope="scope">
                             {{ scope.row.first_login_time > 0 ? $baseFun.resetTime(scope.row.first_login_time * 1000) : "-" }}/</br>
@@ -609,18 +577,22 @@
 <script>
 import { successTips, resetPage } from '@/utils/index'
 import { getadmingrouplist,getcustomeruserlist } from '@/api/staff'
-import { getaccountinfolist,getaccountgrouplist,doaccountgroup,getwaport,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,doupremark,getdynamicip,getstaticip,dobatchlogin,dobatchfastlogin,dobatchlogout,doresetip,distributecustomer,getinheritgrouplist,getinheritaccountlist,doinherit,sortgroup } from '@/api/storeroom'
+import { getaccountinfotglist,getaccountgrouptglist,doaccountgrouptg,doupremarktg,doupgrouptg,dooutputaccounttg,dobatchdelaccounttg,dobatchfastlogintg,dobatchlogouttg,sortgrouptg,dobatchlogintg } from '@/api/tgaccount'
+import { getwaport,dofreedip,dousestatus,getdynamicip,getstaticip,doresetip,distributecustomer,getinheritgrouplist,getinheritaccountlist,doinherit } from '@/api/storeroom'
 export default {
     data() {
         return {
             model1: {
                 page: 1,
-                limit:100,
+                limit: 10,
                 total: 0,
                 ipCtime: "",
                 account: "",
                 staff_no: "",
                 group_id: "",
+                fuser_name: "",
+                fuser_account: "",
+                platform_type:"",
                 work_status: "",
                 custom_popover:'960px',
                 select_sort: "account",
@@ -634,7 +606,6 @@ export default {
                 expire_status: "",
                 disable_status: "",
             },
-            cliHeight:0,
             seatPage:1,
             seatLimit:10,
             seatTotal:0,
@@ -810,10 +781,6 @@ export default {
                     value:"account"
                 },
                 {
-                    label:this.$t('sys_g012'),
-                    value:"staff_no"
-                },
-                {
                     label:this.$t('sys_g013'),
                     value:"offline_time"
                 },
@@ -823,13 +790,16 @@ export default {
                 },
                 {
                     label:this.$t('sys_g015'),
-                    value:"item"
+                    value:"itime"
                 }
             ]
             // return ["",this.$t('sys_g011'),this.$t('sys_g012'),this.$t('sys_g013'), this.$t('sys_g014'), this.$t('sys_g015')]
         },
         onlineOption() {
             return [this.$t('sys_g028'),this.$t('sys_g029'),this.$t('sys_g030')]
+        },
+        plantOption() {
+            return ["",this.$t('sys_q141'),this.$t('sys_q142')]
         },
         betchOption() {
             return [
@@ -843,11 +813,12 @@ export default {
                 },
                 {
                     icon: "refresh",
-                    label: this.$t('sys_g043')
+                    label: ""
+                    // label: this.$t('sys_g043')
                 },
                 {
                     icon: "setting",
-                    label: this.$t('sys_g044')
+                    label: ""
                 },
                 // {
                 //     icon: "setting",
@@ -863,12 +834,12 @@ export default {
                 },
                 {
                     icon: "edit",
-                    label: this.$t('sys_g104')
+                    label: ""
                 },
                 // {},
                 {
                     icon: "connection",
-                    label: this.$t('sys_g106')
+                    label: ""
                 },
                 {
                     icon: "edit",
@@ -908,11 +879,8 @@ export default {
         }
     },
     created() {
-        this.getPortNum();
-        //   this.syncInitApi();
         this.initNumberGroup();
         this.initNumberList();
-        this.cliHeight = document.documentElement.clientHeight-380;
     },
     methods: {
         handleDisabled(row, inde){
@@ -969,6 +937,8 @@ export default {
                 this.model1.staff_status = row;
             }else if(idx == 5){
                 this.model1.work_status = row;
+            }else if(idx == 6){
+                this.model1.platform_type = row;
             }
             this.initNumberList();
         },
@@ -1019,6 +989,8 @@ export default {
             this.model1.account="";
             this.model1.staff_no="";
             this.model1.group_id="";
+            this.model1.fuser_name="";
+            this.model1.fuser_account="";
             this.checkIdArry = [];
             this.checkAccount = [];
             this.screenSelect = [];
@@ -1034,8 +1006,10 @@ export default {
                 page: this.model1.page,
                 limit: this.model1.limit,
                 account:this.model1.account,  //账号
+                fuser_name:this.model1.fuser_name,
                 group_id:this.model1.group_id, //分组
                 staff_no:this.model1.staff_no, //席位
+                laccount:this.model1.fuser_account,
                 sort:sort, //排序
                 nick_name:"",
                 reason:"",
@@ -1054,6 +1028,7 @@ export default {
                 staff_status:this.model1.staff_status||-1,
                 work_status:this.model1.work_status||-1,
                 account_type:this.model1.account_type||-1,
+                platform_type:this.model1.platform_type||-1,
             }
             for (let k = 0; k < this.screenSelect.length; k++) {
                 if (this.screenSelect[k].label == 1) {
@@ -1084,7 +1059,7 @@ export default {
                     params.offline_end_time = this.$baseFun.resetTime(time1[1],3)
                 }
             }
-            getaccountinfolist(params).then(res => {
+            getaccountinfotglist(params).then(res => {
                 this.loading = false;
                 this.model1.total = res.data.total;
                 this.accountDataList = res.data.list || [];
@@ -1092,22 +1067,11 @@ export default {
         },
         async initNumberGroup() {
             this.loadingGroup = true;
-            const { data } = await getaccountgrouplist({name:this.model1.group_name,page:1,limit:100});
+            const { data } = await getaccountgrouptglist({name:this.model1.group_name,page:1,limit:100});
             this.search_icon = false;
             this.loadingGroup = false;
             this.numGroupTotal = data.total;
             this.numberGroupList = data.list || [];
-        },
-        getPortNum() {
-            this.loadingPort = true;
-            getwaport({}).then(res => {
-                setTimeout(()=>{this.loadingPort = false;},500)
-                const port = res.data || "";
-                this.allPortList[0].num = port.port_num;
-                this.allPortList[1].num = port.least_num;
-                this.allPortList[2].num = port.account_num;
-                this.allPortList[3].num = port.online_num;
-            })
         },
         editGroup(row, idx) {
             this.type = idx;
@@ -1124,7 +1088,7 @@ export default {
             }
             this.ipLoading = true;
             this.type == 2 ? params.id = this.groupForm.id : "";
-            const newBank = await doaccountgroup(params);
+            const newBank = await doaccountgrouptg(params);
             if (newBank.code !== 0) return;
             this.visible = false;
             this.ipLoading = false;
@@ -1133,13 +1097,14 @@ export default {
             successTips(this)
         },
         async delGroup(row) {
-            const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });
+            const res = await doaccountgrouptg({ ptype: 3, del_id: [row.id] });
             if (res.code !== 0) return;
             this.groupIdx = 0;
             this.groupForm.group_id = "";
             successTips(this)
             for (let k = 0; k < this.numberGroupList.length; k++) {
                 if (this.numberGroupList[k].id == row.id) {
+                    this.numGroupTotal --;
                     this.numberGroupList.splice(k, 1)
                 }
             }
@@ -1186,7 +1151,6 @@ export default {
             this.initNumberList();
         },
         onlineHandle(row){
-            this.ipForm.ip_id="";
             for (let k = 0; k < this.onlineOption.length; k++) {
                 if (k == row.idx) {
                     this.setIpName = this.onlineOption[k];
@@ -1340,9 +1304,9 @@ export default {
                         let reqApi;
                         let params = {}
                         if (that.setIpType == 100) {
-                            reqApi = dobatchfastlogin;
+                            reqApi = dobatchfastlogintg;
                         }else{
-                            const allPost = [dobatchlogout,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,doupremark,"","",doresetip]
+                            const allPost = [dobatchlogouttg,doupgrouptg,dofreedip,dousestatus,dooutputaccounttg,dobatchdelaccounttg,doupremarktg,"","",doresetip]
                             reqApi = allPost[that.setIpType]
                         }
                         that.setIpType!=9?params.accounts=that.checkAccount:"";
@@ -1375,7 +1339,7 @@ export default {
                 if (valid) {
                     let params = {}
                     // console.log(this.setIpType );
-                    this.ipForm.account?params.accounts=[this.this.ipForm.account]:params.accounts=this.checkAccount;
+                    this.ipForm.account?params.accounts=[this.ipForm.account]:params.accounts=this.checkAccount;
                     if (this.setIpType == 0) {
                         params.expire_time = Date.parse(this.$baseFun.resetTime(this.ipForm.expire_time)) / 1000;
                     } else if (this.setIpType == 1) {
@@ -1400,9 +1364,9 @@ export default {
                     let reqApi;
                     this.isLoading=true;
                     if (this.setIpType == 99) {
-                        reqApi = dobatchlogin;
+                        reqApi = dobatchlogintg;
                     }else{
-                        const allPost = [dobatchlogout,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,"","",doupremark,"","","",distributecustomer]
+                        const allPost = [dobatchlogouttg,doupgrouptg,dofreedip,dousestatus,dooutputaccounttg,dobatchdelaccounttg,"","",doupremarktg,"","","",distributecustomer]
                         reqApi = allPost[this.setIpType]
                     }
                     reqApi(params).then(res => {
@@ -1567,7 +1531,7 @@ export default {
           this.numberGroupList.splice(index, 0, draggedItem);
           this.draggedItemIndex = -1;
           let sortMap = this.numberGroupList.map(item=>{return item.id});
-          const res = await sortgroup({list:sortMap});
+          const res = await sortgrouptg({list:sortMap});
           if (res.code != 0) return;
         }
     },
