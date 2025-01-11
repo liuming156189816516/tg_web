@@ -108,10 +108,10 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-form-item>
-            <!-- <el-form-item>
+            <el-form-item>
                 <el-button type="warning" :disabled="checkIdArry.length==0" @click="seatHandleBtn">{{ $t('sys_g017')}}</el-button>
-            </el-form-item> -->
-            <!-- <el-form-item>
+            </el-form-item>
+            <el-form-item>
                 <el-dropdown @command="(command)=>{handleCommand(1,command)}" trigger="click">
                     <el-button type="primary"> {{ $t('sys_g054') }}
                         <i class="el-icon-arrow-down el-icon--right"></i>
@@ -123,7 +123,7 @@
                         </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item>
                 <el-dropdown @command="(command)=>{handleCommand(2,command)}" trigger="click">
                     <el-button type="primary"> {{ $t('sys_g018') }}
@@ -247,7 +247,37 @@
                             <el-tag size="small" :type="handleTag(scope.row.status)"> {{ accountOptions[scope.row.status] }}</el-tag>
                         </template>
                     </u-table-column>
-                    <u-table-column prop="platform_type" :label="$t('sys_mat066')" minWidth="100">
+                    <u-table-column prop="use_status" :label="$t('sys_g023')" minWidth="100">
+                        <template slot="header">
+                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,2)">
+                            <span style="color:#909399" :class="[model1.use_status?'dropdown_title':'']"> {{ $t('sys_g023') }}
+                                <i class="el-icon-arrow-down el-icon--right" />
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item :class="{'dropdown_selected':idx==model1.use_status}" v-for="(item,idx) in isUseOptions" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
+                            </el-dropdown-menu>
+                            </el-dropdown>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-tag size="small" :type="scope.row.use_status==1?'success':'danger'"> {{ isUseOptions[scope.row.use_status] }}</el-tag>
+                        </template>
+                    </u-table-column>
+                    <u-table-column prop="staff_no" :label="$t('sys_mat063')" minWidth="100">
+                        <template slot="header">
+                            <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,4)">
+                                <span style="color:#909399" :class="[model1.staff_status?'dropdown_title':'']"> {{ $t('sys_mat063') }}
+                                    <i class="el-icon-arrow-down el-icon--right" />
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item :class="{'dropdown_selected':idx==model1.staff_status}" v-for="(item,idx) in setOptions" :key="idx" :command="idx">{{ item==''?$t('sys_l053'):item }}</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </template>
+                        <template slot-scope="scope">
+                            <span class="jump_link" @click.stop="jumpServeicBtn(scope.row,1)">{{ scope.row.staff_no?scope.row.staff_no:"-" }}</span>
+                        </template>
+                    </u-table-column>
+                    <!-- <u-table-column prop="platform_type" :label="$t('sys_mat066')" minWidth="100">
                         <template slot="header">
                             <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,6)">
                             <span style="color:#909399" :class="[model1.platform_type?'dropdown_title':'']"> {{ $t('sys_mat066') }}
@@ -261,7 +291,7 @@
                         <template slot-scope="scope">
                             {{ plantOption[scope.row.platform_type] }}
                         </template>
-                    </u-table-column>
+                    </u-table-column> -->
                     <u-table-column prop="reason" show-overflow-tooltip :label="$t('sys_g025')" minWidth="100">
                         <template slot-scope="scope">
                             <span>{{ scope.row.reason?scope.row.reason:"-" }}</span>
@@ -280,11 +310,11 @@
                         </template>
                         <template slot-scope="scope"> {{ accountType[scope.row.account_type] }}</template>
                     </u-table-column> -->
-                    <u-table-column prop="fuser_name" :label="$t('sys_m068')" minWidth="100">
+                    <!-- <u-table-column prop="fuser_name" :label="$t('sys_m068')" minWidth="100">
                         <template slot-scope="scope">
                             <span>{{ scope.row.fuser_name||"-" }}</span>
                         </template>
-                    </u-table-column>
+                    </u-table-column> -->
                     <!-- <u-table-column prop="total_time" :label="$t('sys_q143')" minWidth="100">
                         <template slot-scope="scope">
                             <span>{{ scope.row.total_time||0 }}</span>
@@ -549,14 +579,14 @@
                          @selection-change="handleCloseChange"  @handlePageSize="blockSwitchPage">  -->
                             <u-table-column type="selection" width="40" :reserve-selection="true" />
                             <u-table-column prop="account" :label="$t('sys_g109')" minWidth="140" />
-                            <u-table-column prop="account_type" :label="$t('sys_l057')" minWidth="100">
+                            <!-- <u-table-column prop="account_type" :label="$t('sys_l057')" minWidth="100">
                                 <template slot="header">
                                     <span style="color:#909399"> {{ blockType==1?$t('sys_mat062'):$t('sys_l057') }}</span>
                                 </template>
                                 <template slot-scope="scope">
                                     <span>{{ blockType==1?scope.row.staff_no:accountType[scope.row.account_type] }}</span>
                                 </template>
-                            </u-table-column>
+                            </u-table-column> -->
                         </u-table>
                         <div class="layui_page">
                             <el-pagination background @size-change="blockPageSize" @current-change="blockSwitchPage"
@@ -803,7 +833,7 @@ export default {
         },
         betchOption() {
             return [
-                {
+            {
                     icon: "bottom",
                     label: this.$t('sys_g041')
                 },
@@ -813,12 +843,11 @@ export default {
                 },
                 {
                     icon: "refresh",
-                    label: ""
-                    // label: this.$t('sys_g043')
+                    label: this.$t('sys_g043')
                 },
                 {
                     icon: "setting",
-                    label: ""
+                    label: this.$t('sys_g044')
                 },
                 // {
                 //     icon: "setting",
@@ -835,11 +864,12 @@ export default {
                 {
                     icon: "edit",
                     label: ""
+                    // label: this.$t('sys_g104')
                 },
                 // {},
                 {
                     icon: "connection",
-                    label: ""
+                    label: this.$t('sys_g106')
                 },
                 {
                     icon: "edit",
