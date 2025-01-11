@@ -84,7 +84,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20">
+                <!-- <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="营销分组：" prop="ad_group_id">
                             <el-select v-model="taskForm.ad_group_id" :placeholder="$t('sys_c052')">
@@ -92,7 +92,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                </el-row>
+                </el-row> -->
                 <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="目标人数：" prop="target_num">
@@ -132,7 +132,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row> -->
-                <el-row :gutter="20">
+                <!-- <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item :label="$t('sys_q130')+'：'" prop="materialData" class="custom_say">
                             <div class="mess_01">
@@ -160,9 +160,6 @@
                                             <div v-if="scope.row.type==7">
                                                 <img class="content_02" :src="scope.row.content.img">
                                                 <div style="font-size:12px;">{{$t('sys_l080')}}：{{scope.row.content.url}}</div>
-                                                <!-- <el-tooltip effect="dark" :content="scope.row.content.content" placement="top">
-                                                    <div class="link_content"><span>{{$t('sys_mat019')}}：</span> <span class="comtent_text">{{scope.row.content.content}}</span></div>
-                                                </el-tooltip> -->
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -180,7 +177,7 @@
                             </div>
                         </el-form-item>
                     </el-col>
-                </el-row>
+                </el-row> -->
                 <el-form-item>
                     <el-button @click="$router.go(-1)">{{ $t('sys_c023') }}</el-button>
                     <el-button type="primary" :loading="isLoading" @click="submitForm('taskForm')">开始拉群</el-button>
@@ -330,7 +327,6 @@
             this.taskForm.qavatar = url;
         },
         submitForm(formName) {
-            console.log(this.taskForm.materialData);
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let materialItem = this.taskForm.materialData.map(item => {
@@ -342,18 +338,18 @@
                     let params = {
                         name:this.taskForm.task_name,
                         pull_num:Number(this.taskForm.pull_num),
-                        qname:this.taskForm.qname,
-                        qremark:this.taskForm.qremark,
-                        qavatar:this.taskForm.qavatar,
+                        // qname:this.taskForm.qname,
+                        // qremark:this.taskForm.qremark,
+                        // qavatar:this.taskForm.qavatar,
                         data_pack_id:this.taskForm.data_pack_id,
-                        admin_group_id:this.taskForm.admin_group_id,
+                        // admin_group_id:this.taskForm.admin_group_id,
                         pull_group_id:this.taskForm.pull_group_id,
                         ad_group_id:this.taskForm.ad_group_id,
                         target_num:Number(this.taskForm.target_num),
                         match_num:Number(this.taskForm.match_num),
                         invite_link:this.taskForm.invite_link,
                         // ad:this.taskForm.relpy_text,
-                        material_list:materialItem
+                        // material_list:materialItem
                     }
                     this.isLoading=true;
                     addbiggrouptask(params).then(res => {
