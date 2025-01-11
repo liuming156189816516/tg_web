@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 import './styles/element-variables.scss'
+
 import Element from 'element-ui'
 import '@/styles/index.scss' // global css
+// import 'umy-ui/lib/theme-chalk/index.css';// 引入样式
 import i18n from '@/locale'
 import App from './App'
 import store from './store'
