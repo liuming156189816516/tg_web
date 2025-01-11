@@ -36,7 +36,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20">
+                <!-- <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="群名称：">
                             <el-input clearable v-model="taskForm.qname" maxlength="20" show-word-limit placeholder="请输入群名称"></el-input>
@@ -74,7 +74,7 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                </el-row>
+                </el-row> -->
                 <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="拉群分组：" prop="pull_group_id">

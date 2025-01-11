@@ -127,12 +127,14 @@
             <i slot="reference" class="el-icon-info"></i>
             <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
           </div>
-          <el-table @sort-change="sorthandle" :data="ipDataList" row-key="id" use-virtual border height="650" v-loading="loading"
-            element-loading-spinner="el-icon-loading" style="width: 100%;" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange"> 
-            <el-table-column type="selection" width="55" />
-            <el-table-column prop="proxy_ip" :label="$t('sys_c060')" minWidth="160" />
-            <el-table-column prop="proxy_user" :label="$t('sys_c003')" minWidth="100" />
-            <el-table-column prop="status" :label="$t('sys_c062')" minWidth="100">
+          <u-table @sort-change="sorthandle" :data="ipDataList" row-key="id" use-virtual border height="650" v-loading="loading"
+            element-loading-spinner="el-icon-loading" style="width: 100%;" ref="serveTable" showBodyOverflow="title" :total="model1.total" 
+            :page-sizes="pageOption" :page-size="model1.limit" :current-page="model1.page" :pagination-show="true"
+            @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="switchPage"> 
+            <u-table-column type="selection" width="55" />
+            <u-table-column prop="proxy_ip" :label="$t('sys_c060')" minWidth="160" />
+            <u-table-column prop="proxy_user" :label="$t('sys_c003')" minWidth="100" />
+            <u-table-column prop="status" :label="$t('sys_c062')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,1)">
                   <span style="color:#909399" :class="[model1.status?'dropdown_title':'']"> {{ $t('sys_c062') }}
@@ -146,15 +148,15 @@
               <template slot-scope="scope">
                 <el-tag size="small" :type="handleTag(scope.row.status)"> {{ networkOption[scope.row.status] }}</el-tag>
               </template>
-            </el-table-column>
-            <el-table-column prop="allot_num" sortable :label="$t('sys_c064')+'/'+$t('sys_c063')" minWidth="160" >
+            </u-table-column>
+            <u-table-column prop="allot_num" sortable :label="$t('sys_c064')+'/'+$t('sys_c063')" minWidth="160" >
               <template slot-scope="scope">
                 <span @click="showIpDetail(scope.row)" v-if="scope.row.user_num>0" style="color:#409eff;cursor: pointer;">{{ scope.row.user_num }}</span>
                 <span v-else>{{ scope.row.user_num }}</span>
                 <span>/{{ scope.row.allot_num }}</span>
               </template>
-            </el-table-column>
-            <el-table-column prop="ip_category" :label="$t('sys_c066')" minWidth="100">
+            </u-table-column>
+            <u-table-column prop="ip_category" :label="$t('sys_c066')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,2)">
                   <span style="color:#909399" :class="[model1.ip_category?'dropdown_title':'']"> {{ $t('sys_c066') }}
@@ -168,13 +170,13 @@
               <template slot-scope="scope">
                 <el-tag size="small" :type="scope.row.ip_category==1?'success':''"> {{ ipClassOptions[scope.row.ip_category] }}</el-tag>
               </template>
-            </el-table-column>
-            <el-table-column prop="ip_type" :label="$t('sys_c065')" minWidth="80">
+            </u-table-column>
+            <u-table-column prop="ip_type" :label="$t('sys_c065')" minWidth="80">
               <template slot-scope="scope">
                 <el-tag size="small" :type="scope.row.ip_type==$t('sys_l028')?'success':''"> {{ ipTypeOptions[scope.row.ip_type] }}</el-tag>
               </template>
-            </el-table-column>
-            <el-table-column prop="expire_status" :label="$t('sys_c066')" minWidth="100">
+            </u-table-column>
+            <u-table-column prop="expire_status" :label="$t('sys_c066')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,3)">
                   <span style="color:#909399" :class="[model1.expire_status?'dropdown_title':'']"> {{ $t('sys_c067') }}
@@ -188,9 +190,9 @@
               <template slot-scope="scope">
                 <el-tag size="small" :type="scope.row.expire_status==1?'success':scope.row.expire_status==3?'warning':'danger'"> {{ exprireOptions[scope.row.expire_status] }}</el-tag>
               </template>
-            </el-table-column>
-            <el-table-column prop="country" :label="$t('sys_c068')" minWidth="100" />
-            <el-table-column prop="disable_status" :label="$t('sys_c069')" minWidth="100">
+            </u-table-column>
+            <u-table-column prop="country" :label="$t('sys_c068')" minWidth="100" />
+            <u-table-column prop="disable_status" :label="$t('sys_c069')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,4)">
                   <span style="color:#909399" :class="[model1.disable_status?'dropdown_title':'']"> {{ $t('sys_c069') }}
@@ -204,29 +206,20 @@
               <template slot-scope="scope">
                 <el-tag size="small" :type="scope.row.disable_status==1?'success':'danger'"> {{ stopOptions[scope.row.disable_status] }}</el-tag>
               </template>
-            </el-table-column>
-            <el-table-column prop="expire_time" :label="$t('sys_c070')" minWidth="160">
+            </u-table-column>
+            <u-table-column prop="expire_time" :label="$t('sys_c070')" minWidth="160">
               <template slot-scope="scope">
                 {{scope.row.expire_time>0?$baseFun.resetTime(scope.row.expire_time*1000):0 }}
               </template>
-            </el-table-column>
-            <el-table-column prop="remark" show-overflow-tooltip :label="$t('sys_c072')" width="100">
+            </u-table-column>
+            <u-table-column prop="remark" show-overflow-tooltip :label="$t('sys_c072')" width="100">
               <template slot-scope="scope">
                 <div class="remark_ext">{{ scope.row.remark }}</div>
                 <div @click.stop="addRemark(scope.row,11)"><i class="el-icon-edit" style="color: rgb(103, 194, 58); cursor: pointer;"></i></div>
               </template>
-            </el-table-column>
-            <el-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" minWidth="100" />
-          </el-table>
-          <div class="layui_page">
-            <el-pagination background @size-change="homelHandleSize" @current-change="homeHandleCurrent" :page-size="model1.limit"
-            :page-sizes="pageOption" :current-page.sync="model1.page" layout="total, sizes, prev, pager, next, jumper" :total="model1.total">
-            </el-pagination>
-          </div>
-
-          <!-- showBodyOverflow="title" :total="model1.total" 
-            :page-sizes="pageOption" :page-size="model1.limit" :current-page="model1.page" :pagination-show="true"
-             @handlePageSize="switchPage" -->
+            </u-table-column>
+            <u-table-column prop="reason" show-overflow-tooltip :label="$t('sys_c071')" minWidth="100" />
+          </u-table>
         </div>
       </div>
     </div>
@@ -423,15 +416,15 @@
           <el-button icon="el-icon-refresh-right" @click="restQueryBtn">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
       </el-form>
-      <el-table @sort-change="sorthandle" :data="ipDetailList" border height="560" v-loading="detailLoading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }">
-        <el-table-column prop="proxy_ip" :label="$t('sys_g005')" minWidth="140" />
-        <el-table-column prop="account" :label="$t('sys_g064')" minWidth="100" />
-        <el-table-column prop="ip_time" :label="$t('sys_g065')" minWidth="150">
+      <u-table @sort-change="sorthandle" :data="ipDetailList" border height="560" v-loading="detailLoading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }">
+        <u-table-column prop="proxy_ip" :label="$t('sys_g005')" minWidth="140" />
+        <u-table-column prop="account" :label="$t('sys_g064')" minWidth="100" />
+        <u-table-column prop="ip_time" :label="$t('sys_g065')" minWidth="150">
           <template slot-scope="scope">
             {{scope.row.ip_time>0?$baseFun.resetTime(scope.row.ip_time*1000):"-" }}
           </template>
-        </el-table-column>
-      </el-table>
+        </u-table-column>
+      </u-table>
       <div class="layui_page">
         <el-pagination background @size-change="setDetailSize" @current-change="setDetailPage" :page-sizes="pageOption"
           :page-size="this.model2.limit" layout="total, sizes, prev, pager, next, jumper" :total="this.model2.total">
@@ -684,12 +677,11 @@ export default {
     rowSelectChange(row, column, event) {
       let tableCell = this.$refs.serveTable;
       if (this.checkIdArry.includes(row.id)) {
-        tableCell.toggleRowSelection(row,false);
+        tableCell.toggleRowSelection([{row:row,selected:false}]);
         return;
       }
-      tableCell.toggleRowSelection(row,true);
+      tableCell.toggleRowSelection([{row:row,selected:true}]);
     },
-    
     handleNewwork(row,idx){
       if (idx == 1) {
         this.model1.status=row;
@@ -1000,15 +992,6 @@ export default {
     },
     setPageSize(val){
       this.model1.limit=val;
-      this.initiplist();
-    },
-    homelHandleSize(val) {
-      this.model1.page=1;
-      this.model1.limit=val;
-      this.initiplist();
-    },
-    homeHandleCurrent(val) {
-      this.model1.page=val;
       this.initiplist();
     },
     switchPage({page, size}){

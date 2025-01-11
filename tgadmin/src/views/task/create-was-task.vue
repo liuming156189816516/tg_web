@@ -17,16 +17,16 @@
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="18">
-                        <el-form-item label="WS账号来源：" prop="source_num">
+                        <el-form-item label="TG账号来源：" prop="source_num">
                             <el-select v-model="taskForm.source_num" :placeholder="$t('sys_c052')">
-                                <el-option label="WS账号列表" :value="1"></el-option>
+                                <el-option label="TG账号列表" :value="1"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="18">
-                        <el-form-item label="选择WS账号：" prop="group_id" class="custom_mess">
+                        <el-form-item label="选择TG账号：" prop="group_id" class="custom_mess">
                             <div class="mess_01">
                                 <div class="mess_t_01">
                                     <span class="mess_t_02" style="cursor: pointer;" @click="clearWsBtn">{{ $t('sys_c049') }}</span>
@@ -45,9 +45,9 @@
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="18">
-                        <el-form-item label="选择WS数据：" prop="ws_data">
+                        <el-form-item label="选择TG数据：" prop="ws_data">
                             <el-radio-group v-model="taskForm.ws_data">
-                                <el-radio :label="1">WS粉丝数据</el-radio>
+                                <el-radio :label="1">TG粉丝数据</el-radio>
                                 <!-- <el-radio label="群发未回复粉丝数据"></el-radio> -->
                             </el-radio-group>
                         </el-form-item>
