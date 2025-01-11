@@ -1,5 +1,19 @@
 <template>
     <div style="width:100%;height: 100%; float: left; position: relative;">
+        <el-row :gutter="20">
+            <el-col :span="6" v-for="(item, idx) in allPortList" :key="idx" v-show="item != ''">
+                <el-card>
+                    <div class="refsh_icon" @click="getPortNum">
+                        <i class="el-icon-refresh" size="16"></i>
+                    </div>
+                    <el-button v-if="loadingPort" class="loading_icon" type="primary" :loading="true"></el-button>
+                    <div class="box_card_item" v-else>
+                        <span class="port_title">{{ item.name }}</span>
+                        <span>{{ item.num }}</span>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
         <!-- 筛选条件 -->
         <el-form size="small" :inline="true" style="margin-top: 10px;">
             <el-form-item>
@@ -607,8 +621,7 @@
 <script>
 import { successTips, resetPage } from '@/utils/index'
 import { getadmingrouplist,getcustomeruserlist } from '@/api/staff'
-import { getaccountinfotglist,getaccountgrouptglist,doaccountgrouptg,doupremarktg,doupgrouptg,dooutputaccounttg,dobatchdelaccounttg,dobatchfastlogintg,dobatchlogouttg,sortgrouptg,dobatchlogintg } from '@/api/tgaccount'
-import { getwaport,dofreedip,dousestatus,getdynamicip,getstaticip,doresetip,distributecustomer,getinheritgrouplist,getinheritaccountlist,doinherit } from '@/api/storeroom'
+import { getaccountinfolist,getaccountgrouplist,doaccountgroup,getwaport,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,doupremark,getdynamicip,getstaticip,dobatchlogin,dobatchfastlogin,dobatchlogout,doresetip,distributecustomer,getinheritgrouplist,getinheritaccountlist,doinherit,sortgroup } from '@/api/storeroom'
 export default {
     data() {
         return {
@@ -909,8 +922,10 @@ export default {
         }
     },
     created() {
+        this.getPortNum();
         this.initNumberGroup();
         this.initNumberList();
+        this.cliHeight = document.documentElement.clientHeight-380;
     },
     methods: {
         handleDisabled(row, inde){
@@ -967,8 +982,6 @@ export default {
                 this.model1.staff_status = row;
             }else if(idx == 5){
                 this.model1.work_status = row;
-            }else if(idx == 6){
-                this.model1.platform_type = row;
             }
             this.initNumberList();
         },
@@ -1019,8 +1032,6 @@ export default {
             this.model1.account="";
             this.model1.staff_no="";
             this.model1.group_id="";
-            this.model1.fuser_name="";
-            this.model1.fuser_account="";
             this.checkIdArry = [];
             this.checkAccount = [];
             this.screenSelect = [];
@@ -1036,10 +1047,8 @@ export default {
                 page: this.model1.page,
                 limit: this.model1.limit,
                 account:this.model1.account,  //账号
-                fuser_name:this.model1.fuser_name,
                 group_id:this.model1.group_id, //分组
                 staff_no:this.model1.staff_no, //席位
-                laccount:this.model1.fuser_account,
                 sort:sort, //排序
                 nick_name:"",
                 reason:"",
@@ -1058,7 +1067,6 @@ export default {
                 staff_status:this.model1.staff_status||-1,
                 work_status:this.model1.work_status||-1,
                 account_type:this.model1.account_type||-1,
-                platform_type:this.model1.platform_type||-1,
             }
             for (let k = 0; k < this.screenSelect.length; k++) {
                 if (this.screenSelect[k].label == 1) {
@@ -1089,7 +1097,7 @@ export default {
                     params.offline_end_time = this.$baseFun.resetTime(time1[1],3)
                 }
             }
-            getaccountinfotglist(params).then(res => {
+            getaccountinfolist(params).then(res => {
                 this.loading = false;
                 this.model1.total = res.data.total;
                 this.accountDataList = res.data.list || [];
@@ -1097,11 +1105,22 @@ export default {
         },
         async initNumberGroup() {
             this.loadingGroup = true;
-            const { data } = await getaccountgrouptglist({name:this.model1.group_name,page:1,limit:100});
+            const { data } = await getaccountgrouplist({name:this.model1.group_name,page:1,limit:100});
             this.search_icon = false;
             this.loadingGroup = false;
             this.numGroupTotal = data.total;
             this.numberGroupList = data.list || [];
+        },
+        getPortNum() {
+            this.loadingPort = true;
+            getwaport({}).then(res => {
+                setTimeout(()=>{this.loadingPort = false;},500)
+                const port = res.data || "";
+                this.allPortList[0].num = port.port_num;
+                this.allPortList[1].num = port.least_num;
+                this.allPortList[2].num = port.account_num;
+                this.allPortList[3].num = port.online_num;
+            })
         },
         editGroup(row, idx) {
             this.type = idx;
@@ -1118,7 +1137,7 @@ export default {
             }
             this.ipLoading = true;
             this.type == 2 ? params.id = this.groupForm.id : "";
-            const newBank = await doaccountgrouptg(params);
+            const newBank = await doaccountgroup(params);
             if (newBank.code !== 0) return;
             this.visible = false;
             this.ipLoading = false;
@@ -1127,14 +1146,13 @@ export default {
             successTips(this)
         },
         async delGroup(row) {
-            const res = await doaccountgrouptg({ ptype: 3, del_id: [row.id] });
+            const res = await doaccountgroup({ ptype: 3, del_id: [row.id] });
             if (res.code !== 0) return;
             this.groupIdx = 0;
             this.groupForm.group_id = "";
             successTips(this)
             for (let k = 0; k < this.numberGroupList.length; k++) {
                 if (this.numberGroupList[k].id == row.id) {
-                    this.numGroupTotal --;
                     this.numberGroupList.splice(k, 1)
                 }
             }
@@ -1181,6 +1199,7 @@ export default {
             this.initNumberList();
         },
         onlineHandle(row){
+            this.ipForm.ip_id="";
             for (let k = 0; k < this.onlineOption.length; k++) {
                 if (k == row.idx) {
                     this.setIpName = this.onlineOption[k];
@@ -1334,9 +1353,9 @@ export default {
                         let reqApi;
                         let params = {}
                         if (that.setIpType == 100) {
-                            reqApi = dobatchfastlogintg;
+                            reqApi = dobatchfastlogin;
                         }else{
-                            const allPost = [dobatchlogouttg,doupgrouptg,dofreedip,dousestatus,dooutputaccounttg,dobatchdelaccounttg,doupremarktg,"","",doresetip]
+                            const allPost = [dobatchlogout,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,doupremark,"","",doresetip]
                             reqApi = allPost[that.setIpType]
                         }
                         that.setIpType!=9?params.accounts=that.checkAccount:"";
@@ -1369,7 +1388,7 @@ export default {
                 if (valid) {
                     let params = {}
                     // console.log(this.setIpType );
-                    this.ipForm.account?params.accounts=[this.ipForm.account]:params.accounts=this.checkAccount;
+                    this.ipForm.account?params.accounts=[this.this.ipForm.account]:params.accounts=this.checkAccount;
                     if (this.setIpType == 0) {
                         params.expire_time = Date.parse(this.$baseFun.resetTime(this.ipForm.expire_time)) / 1000;
                     } else if (this.setIpType == 1) {
@@ -1394,9 +1413,9 @@ export default {
                     let reqApi;
                     this.isLoading=true;
                     if (this.setIpType == 99) {
-                        reqApi = dobatchlogintg;
+                        reqApi = dobatchlogin;
                     }else{
-                        const allPost = [dobatchlogouttg,doupgrouptg,dofreedip,dousestatus,dooutputaccounttg,dobatchdelaccounttg,"","",doupremarktg,"","","",distributecustomer]
+                        const allPost = [dobatchlogout,doupgroup,dofreedip,dousestatus,dooutputaccount,dobatchdelaccount,"","",doupremark,"","","",distributecustomer]
                         reqApi = allPost[this.setIpType]
                     }
                     reqApi(params).then(res => {
@@ -1561,7 +1580,7 @@ export default {
           this.numberGroupList.splice(index, 0, draggedItem);
           this.draggedItemIndex = -1;
           let sortMap = this.numberGroupList.map(item=>{return item.id});
-          const res = await sortgrouptg({list:sortMap});
+          const res = await sortgroup({list:sortMap});
           if (res.code != 0) return;
         }
     },
