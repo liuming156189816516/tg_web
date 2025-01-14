@@ -71,12 +71,17 @@
                   </el-tooltip>
                 </template>
             </el-table-column> -->
-            <el-table-column prop="match_num" label="拉手数量" minWidth="100" />
+            <!-- <el-table-column prop="match_num" label="拉手数量" minWidth="100"> -->
             <!-- <el-table-column prop="match_num" label="拉手数量" minWidth="100">
               <template slot-scope="scope">
-                <el-button class="jump_un_link"type="text" :disabled="!scope.row.material_list" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.material_list==null?0:scope.row.material_list.length }}</el-button>
+                <el-button class="jump_un_link"type="text" :disabled="!scope.row.match_num" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.match_num==null?0:scope.row.match_num }}</el-button>
               </template>
             </el-table-column> -->
+            <el-table-column prop="match_num" label="拉手数量" width="100">
+              <template slot-scope="scope">
+                <div class="jump_un_link" @click.stop="showMatch(scope.row)">{{ scope.row.match_num||0 }}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="target_num" label="目标人数" minWidth="100" />
             <el-table-column prop="end_num" label="完成数" minWidth="100">
                 <template slot-scope="scope">{{ scope.row.ad_account||"-" }}</template>
