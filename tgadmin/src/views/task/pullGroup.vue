@@ -143,10 +143,10 @@
                 </el-button>
               </template>
             </el-table-column> -->
-            <el-table-column fixed="right" :label="$t('sys_c010')" width="200">
+            <el-table-column fixed="right" :label="$t('sys_c010')" width="120">
                 <template slot-scope="scope">
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button> -->
-                  <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button>
+                  <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button> -->
                   <el-button v-if="scope.row.status==1" :disabled="checkIdArry.length>0" :type="scope.row.status==1?'primary':'danger'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
                     <span v-text="scope.row.status==1?'启动任务':'关闭任务'"></span>
                   </el-button>
