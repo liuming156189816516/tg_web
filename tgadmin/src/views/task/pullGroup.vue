@@ -41,7 +41,7 @@
           element-loading-spinner="el-icon-loading" style="width: 100%;" showBodyOverflow="title" :total="model1.total" :page-sizes="pageOption" 
           :page-size="model1.limit" :current-page="model1.page" :pagination-show="true" @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="pageHandle">    -->
           <el-table :summary-method="getSummaries" show-summary :data="taskDataList" row-key="id" use-virtual
-            border height="700" v-loading="loading" ref="serveTable" element-loading-spinner="el-icon-loading" style="width: 100%;"
+            border height="800" v-loading="loading" ref="serveTable" element-loading-spinner="el-icon-loading" style="width: 100%;"
             @selection-change="handleSelectionChange" @row-click="rowSelectChange">  
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" :label="$t('sys_g070')" minWidth="120" />
@@ -64,18 +64,19 @@
                   <el-avatar shape="square" :size="40" :src="scope.row.qavatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" />
                 </template>
             </el-table-column> -->
-            <el-table-column prop="invite_link" label="邀请链接" minWidth="120">
-                <template slot-scope="scope">
+            <el-table-column prop="invite_link" show-overflow-tooltip label="邀请链接" minWidth="120" />
+                <!-- <template slot-scope="scope">
                   <el-tooltip class="item" effect="dark" :content="scope.row.invite_link" placement="top">
-                    <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.invite_link||"-" }}</div>
+                    <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;text-align: center;">{{ scope.row.invite_link||"-" }}</div>
                   </el-tooltip>
                 </template>
-            </el-table-column>
-            <el-table-column prop="match_num" label="拉手数量" minWidth="100">
+            </el-table-column> -->
+            <el-table-column prop="match_num" label="拉手数量" minWidth="100" />
+            <!-- <el-table-column prop="match_num" label="拉手数量" minWidth="100">
               <template slot-scope="scope">
                 <el-button class="jump_un_link"type="text" :disabled="!scope.row.material_list" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.material_list==null?0:scope.row.material_list.length }}</el-button>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="target_num" label="目标人数" minWidth="100" />
             <el-table-column prop="end_num" label="完成数" minWidth="100">
                 <template slot-scope="scope">{{ scope.row.ad_account||"-" }}</template>
