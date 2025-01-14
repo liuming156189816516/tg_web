@@ -88,7 +88,7 @@
                     <el-col :span="18">
                         <el-form-item label="邀请链接：" prop="invite_link" style="position: relative;">
                             <el-input type="textarea" @input="checkLink" clearable v-model="taskForm.invite_link" placeholder="请输入邀请链接" rows="5" />
-                            <span style="position: absolute;right: 10px;bottom: 0;color: #f56c6c;font-size: 13px;">{{ linkLen||0 }}</span>
+                            <span style="position: absolute;right: 10px;bottom: 0;color: #f56c6c;font-size: 13px;">{{ linkLen||0 }}条</span>
                         </el-form-item>
                     </el-col>
                 </el-row>
