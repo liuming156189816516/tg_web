@@ -13,9 +13,9 @@
         <el-form-item>
           <el-button type="primary" :disabled="checkIdArry.length==0" @click="handleGroupBtn(4)">{{ $t('sys_q111') }}</el-button>
         </el-form-item> -->
-        <el-form-item>
-        <el-button type="primary" :disabled="checkIdArry.length==0" @click.stop="scamperBtn(0,4)">{{ $t('sys_q111') }}</el-button>
-      </el-form-item>
+        <!-- <el-form-item>
+          <el-button type="primary" :disabled="checkIdArry.length==0" @click.stop="scamperBtn(0,4)">{{ $t('sys_q111') }}</el-button>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="danger" :disabled="checkIdArry.length==0" @click="handleGroupBtn(2)">{{ $t('sys_rai082') }}</el-button>
         </el-form-item>
@@ -27,9 +27,9 @@
           <el-button icon="el-icon-refresh-right" @click="resetQuery">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
 
-        <el-form-item class="fr">
+        <!-- <el-form-item class="fr">
           自动炸群: <el-switch v-model="auto_scamper" active-text="开启" inactive-text="关闭" @change="handleScamper" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <!-- 分组管理 -->
       <div class="continer_main">
@@ -44,14 +44,14 @@
             border height="700" v-loading="loading" ref="serveTable" element-loading-spinner="el-icon-loading" style="width: 100%;"
             @selection-change="handleSelectionChange" @row-click="rowSelectChange">  
             <el-table-column type="selection" width="55" />
-            <el-table-column prop="name" :label="$t('sys_g070')" width="120" />
-            <el-table-column prop="qname" :label="$t('sys_rai086')" width="120">
+            <el-table-column prop="name" :label="$t('sys_g070')" minWidth="120" />
+            <!-- <el-table-column prop="qname" :label="$t('sys_rai086')" width="120">
                 <template slot-scope="scope">
                   <el-tooltip class="item" effect="dark" :content="scope.row.qname" placement="top">
                     <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.qname||"-" }}</div>
                   </el-tooltip>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <!-- <el-table-column prop="qremark" label="群描述" minWidth="120">
               <template slot-scope="scope" >
                 <el-tooltip class="item" effect="dark" :content="scope.row.qremark||'-'" placement="top-start">
@@ -71,9 +71,13 @@
                   </el-tooltip>
                 </template>
             </el-table-column>
-            <el-table-column prop="admin_account" label="管理员" minWidth="120" />
-            <el-table-column prop="pull_group_name" label="拉群分组" minWidth="100" />
-            <el-table-column prop="ad_account" label="营销账号" width="100">
+            <el-table-column prop="match_num" label="拉手数量" minWidth="100">
+              <template slot-scope="scope">
+                <el-button class="jump_un_link"type="text" :disabled="!scope.row.material_list" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.material_list==null?0:scope.row.material_list.length }}</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="target_num" label="目标人数" minWidth="100" />
+            <el-table-column prop="end_num" label="完成数" minWidth="100">
                 <template slot-scope="scope">{{ scope.row.ad_account||"-" }}</template>
             </el-table-column>
             <!-- <el-table-column prop="ad" :label="$t('sys_rai091')" minWidth="120">
@@ -83,13 +87,7 @@
                   </el-tooltip>
                 </template>
             </el-table-column> -->
-            <el-table-column prop="match_num" :label="$t('sys_q130')" width="100">
-              <template slot-scope="scope">
-                <el-button class="jump_un_link"type="text" :disabled="!scope.row.material_list" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.material_list==null?0:scope.row.material_list.length }}</el-button>
-                <!-- <div class="jump_un_link" @click.stop="scamperBtn(scope.row,1)"></div> -->
-              </template>
-            </el-table-column>
-            <el-table-column prop="status" :label="$t('sys_rai001')" width="100">
+            <el-table-column prop="status" :label="$t('sys_rai001')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command)">
                   <span style="color:#909399" :class="[model1.status?'dropdown_title':'']"> {{ $t('sys_l059') }}
@@ -104,7 +102,7 @@
                 <el-tag size="small" :type="scope.row.status==0||scope.row.status==1?'info':scope.row.status==2?'warning':scope.row.status==5?'success':'danger'"> {{ statusOptions[scope.row.status]||"-" }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="zq_num" label="炸群次数" width="100" />
+            <!-- <el-table-column prop="zq_num" label="炸群次数" width="100" />
             <el-table-column prop="match_num" label="拉手数量" width="100">
               <template slot-scope="scope">
                 <div class="jump_un_link" @click.stop="showMatch(scope.row)">{{ scope.row.match_num||0 }}</div>
@@ -119,7 +117,7 @@
                     <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.reason||"-" }}</div>
                   </el-tooltip>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="itime" :label="$t('sys_c008')" minWidth="160">
                 <template slot-scope="scope">
                   <div>{{scope.row.itime>0?$baseFun.resetTime(scope.row.itime*1000):"-" }}</div>
@@ -145,7 +143,7 @@
                 </el-button>
               </template>
             </el-table-column> -->
-            <el-table-column fixed="right" :label="$t('sys_c010')" minWidth="260">
+            <el-table-column fixed="right" :label="$t('sys_c010')" width="260">
                 <template slot-scope="scope">
                   <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button>
                   <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button>
@@ -360,7 +358,7 @@ export default {
     }
   },
   created() {
-    this.initGroupConfig();
+    // this.initGroupConfig();
     this.getPullTaskList();
   },
   methods: {

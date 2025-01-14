@@ -122,9 +122,9 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
                 <el-button type="warning" :disabled="checkIdArry.length==0" @click="seatHandleBtn">{{ $t('sys_g017')}}</el-button>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-dropdown @command="(command)=>{handleCommand(1,command)}" trigger="click">
                     <el-button type="primary"> {{ $t('sys_g054') }}
@@ -276,7 +276,7 @@
                             <el-tag size="small" :type="scope.row.use_status==1?'success':'danger'"> {{ isUseOptions[scope.row.use_status] }}</el-tag>
                         </template>
                     </u-table-column>
-                    <u-table-column prop="staff_no" :label="$t('sys_mat063')" minWidth="100">
+                    <!-- <u-table-column prop="staff_no" :label="$t('sys_mat063')" minWidth="100">
                         <template slot="header">
                             <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,4)">
                                 <span style="color:#909399" :class="[model1.staff_status?'dropdown_title':'']"> {{ $t('sys_mat063') }}
@@ -290,7 +290,7 @@
                         <template slot-scope="scope">
                             <span class="jump_link" @click.stop="jumpServeicBtn(scope.row,1)">{{ scope.row.staff_no?scope.row.staff_no:"-" }}</span>
                         </template>
-                    </u-table-column>
+                    </u-table-column> -->
                     <!-- <u-table-column prop="platform_type" :label="$t('sys_mat066')" minWidth="100">
                         <template slot="header">
                             <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command,6)">
@@ -888,7 +888,8 @@ export default {
                 // {},
                 {
                     icon: "connection",
-                    label: this.$t('sys_g106')
+                    // label: this.$t('sys_g106')
+                    label: ""
                 },
                 {
                     icon: "edit",

@@ -79,8 +79,16 @@
                     <el-col :span="18">
                         <el-form-item label="拉群分组：" prop="pull_group_id">
                             <el-select v-model="taskForm.pull_group_id" :placeholder="$t('sys_c052')">
-                                <el-option :label="item.name+'(数量：'+item.count+')，在线：('+item.online_num+')'" :value="item.group_id" v-for="(item,idx) in accountGroupList" :key="idx"></el-option>
+                                <el-option :label="item.name+'(数量：'+item.count+', 有效：'+item.online_num+')'" :value="item.group_id" v-for="(item,idx) in accountGroupList" :key="idx"></el-option>
                             </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="18">
+                        <el-form-item label="邀请链接：" prop="invite_link" style="position: relative;">
+                            <el-input type="textarea" @input="checkLink" clearable v-model="taskForm.invite_link" placeholder="请输入邀请链接" rows="5" />
+                            <span style="position: absolute;right: 10px;bottom: 0;color: #f56c6c;font-size: 13px;">{{ linkLen||0 }}</span>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -96,7 +104,7 @@
                 <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="目标人数：" prop="target_num">
-                            <el-select v-model="taskForm.target_num" filterable allow-create default-first-option placeholder="请选择/输入目标人数" @change="taskForm.target_num=taskForm.target_num.replace(/[^\d]/g,'')">
+                            <el-select v-model="taskForm.target_num" filterable allow-create default-first-option placeholder="请选择/输入目标人数">
                                 <el-option v-for="item in targetOptions" :key="item" :label="item" :value="item" />
                             </el-select>
                         </el-form-item>
@@ -120,8 +128,15 @@
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="18">
-                        <el-form-item label="邀请链接：" prop="invite_link">
-                            <el-input type="textarea" clearable v-model="taskForm.invite_link" placeholder="请输入邀请链接" rows="5" />
+                        <el-form-item label="时间间隔(秒)：" prop="interval_time">
+                            <el-input clearable v-model="taskForm.interval_time" placeholder="请输入时间间隔" onkeyup="value=value.replace(/[^\d]/g,'')" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="18">
+                        <el-form-item label="拉手拉人上限：" prop="upper_limit">
+                            <el-input clearable v-model="taskForm.upper_limit" placeholder="请输入拉手拉人上限值" onkeyup="value=value.replace(/[^\d]/g,'')" />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -201,6 +216,7 @@
     components: {material,'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer') },
     data() {
       return {
+        linkLen:0,
         totalNum:0,
         source_type:"",
         is_index:"",
@@ -279,6 +295,9 @@
                 match_num: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
                 invite_link: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
                 data_pack_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+                interval_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+                upper_limit: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+
                 materialData: [{required: true, required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 relpy_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' },{ max: 2000, message: '最多可输入2000个字符', trigger: 'blur' }],
             }
@@ -309,6 +328,10 @@
         changeAccountNum(){
             let numbers = this.accountGroupList.filter(item => {return item.group_id == this.taskForm.group_id});
             this.totalNum = numbers.reduce((sum, item) => sum + Number(item.online_num || 0), 0);
+        },
+        checkLink(){
+            const value = this.taskForm.invite_link;
+            this.linkLen = value?value.split('\n').length:0; 
         },
         async checkDataIsUse(e){
             let imgFormat = ["jpg", "jpeg", "png"];
@@ -348,6 +371,8 @@
                         target_num:Number(this.taskForm.target_num),
                         match_num:Number(this.taskForm.match_num),
                         invite_link:this.taskForm.invite_link,
+                        interval_time:Number(this.taskForm.interval_time),
+                        upper_limit:Number(this.taskForm.upper_limit),
                         // ad:this.taskForm.relpy_text,
                         // material_list:materialItem
                     }
