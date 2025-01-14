@@ -318,7 +318,7 @@ export default {
       matchDataList:[],
       checkIdArry:[],
       taskDataList:[],
-      showNum:[12],
+      showNum:[3,4,5],
       materialData:[],
       dialogVisible:false
     }
