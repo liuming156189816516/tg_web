@@ -83,16 +83,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="target_num" label="目标人数" minWidth="100" />
-            <el-table-column prop="end_num" label="完成数" minWidth="100">
-                <template slot-scope="scope">{{ scope.row.ad_account||"-" }}</template>
-            </el-table-column>
-            <!-- <el-table-column prop="ad" :label="$t('sys_rai091')" minWidth="120">
-                <template slot-scope="scope">
-                  <el-tooltip class="item" effect="dark" :content="scope.row.ad" placement="top">
-                    <div style="width: 120px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.ad||"-" }}</div>
-                  </el-tooltip>
-                </template>
-            </el-table-column> -->
+            <el-table-column prop="end_num" label="完成数" minWidth="100" />
             <el-table-column prop="status" :label="$t('sys_rai001')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command)">
