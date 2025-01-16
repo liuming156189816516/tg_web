@@ -179,6 +179,10 @@ export const dotaskconfiginfo = (params) =>{
 export const dobatchdelmarketgroupinfo = (params) =>{
   return request({url:'/marketgroup/dobatchdelmarketgroupinfo',method:'post',data:params})
 }
+export const dobatchclosebiggrouptask = (params) =>{
+  return request({url:'/biggroup/dobatchclosebiggrouptask',method:'post',data:params})
+}
+
 
 
 

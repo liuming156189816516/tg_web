@@ -144,8 +144,8 @@
                 <template slot-scope="scope">
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button> -->
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button> -->
-                  <el-button v-if="scope.row.status==1" :disabled="checkIdArry.length>0" :type="scope.row.status==1?'primary':'danger'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
-                    <span v-text="scope.row.status==1?'启动任务':'关闭任务'"></span>
+                  <el-button :disabled="checkIdArry.length>0&&scope.row.status!=1||scope.row.status!=2" :type="scope.row.status==2?'danger':'primary'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
+                    <span v-text="scope.row.status==2?'关闭任务':'启动任务'"></span>
                   </el-button>
                   <!-- <el-button :disabled="checkIdArry.length>0" type="success" plain size="mini" @click.stop="setAdminBtn(scope.row)">设置管理</el-button> -->
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row)">{{ $t('sys_rai098') }}</el-button>
@@ -272,7 +272,7 @@
 <script>
 import { successTips } from '@/utils/index'
 import material from '../content/material.vue';
-import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad} from '@/api/task'
+import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad,dobatchclosebiggrouptask} from '@/api/task'
 export default {
   components: {material,'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer') },
   data() {
@@ -523,16 +523,18 @@ export default {
         }
     },
     handleTaskBtn(row){
-      if(row.status !=1 )return;
+      if(row.status !=1&&row.status !=2 )return;
       let that = this;
-      that.$confirm(that.$t('sys_rai046',{value:that.$t('sys_q129')}), that.$t('sys_l013'), {
+      let tips = row.status==1?that.$t('sys_q129'):that.$t('sys_l096');
+      that.$confirm(that.$t('sys_c046',{value:tips}), that.$t('sys_l013'), {
           type: 'warning',
           confirmButtonText: that.$t('sys_c024'),
           cancelButtonText: that.$t('sys_c023'),
           beforeClose: function (action, instance, done) {
               if (action === 'confirm') {
                 instance.confirmButtonLoading = true;
-                startbiggrouptask({id:row.id}).then(res=>{
+                let reqApi = row.status==1?startbiggrouptask:dobatchclosebiggrouptask;
+                reqApi({ids:[row.id]}).then(res=>{
                   instance.confirmButtonLoading = false;
                   if (res.code != 0) return;
                     that.getPullTaskList(1);
