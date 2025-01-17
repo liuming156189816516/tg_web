@@ -23,6 +23,9 @@
           <el-input clearable v-model="model1.task_name" :placeholder="$t('sys_mat024')"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-input clearable v-model="model1.invite_link" :placeholder="$t('sys_mat061',{value:$t('sys_q133')})"></el-input>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="getPullTaskList(1)">{{ $t('sys_c002') }}</el-button>
           <el-button icon="el-icon-refresh-right" @click="resetQuery">{{ $t('sys_c049') }}</el-button>
         </el-form-item>
@@ -64,7 +67,7 @@
                   <el-avatar shape="square" :size="40" :src="scope.row.qavatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" />
                 </template>
             </el-table-column> -->
-            <el-table-column prop="invite_link" show-overflow-tooltip label="邀请链接" minWidth="120" />
+            <el-table-column prop="invite_link" show-overflow-tooltip label="邀请链接" minWidth="180" />
                 <!-- <template slot-scope="scope">
                   <el-tooltip class="item" effect="dark" :content="scope.row.invite_link" placement="top">
                     <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;text-align: center;">{{ scope.row.invite_link||"-" }}</div>
@@ -79,11 +82,15 @@
             </el-table-column> -->
             <el-table-column prop="match_num" label="拉手数量" width="100">
               <template slot-scope="scope">
-                <div class="jump_un_link" @click.stop="showMatch(scope.row)">{{ scope.row.match_num||0 }}</div>
+                <div class="jump_un_link" @click.stop="showMatch(scope.row,1)">{{ scope.row.match_num||0 }}</div>
               </template>
             </el-table-column>
             <el-table-column prop="target_num" label="目标人数" minWidth="100" />
-            <el-table-column prop="end_num" label="完成数" minWidth="100" />
+            <el-table-column prop="end_num" label="完成数" minWidth="100">
+              <template slot-scope="scope">
+                <div class="jump_un_link" @click.stop="showMatch(scope.row,2)">{{ scope.row.end_num||0 }}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="status" :label="$t('sys_rai001')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command)">
@@ -162,30 +169,25 @@
         <!-- <el-pagination :total="model1.total" style="display: none;" /> -->
       </div>
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false" width="560px" center>
-        <!-- <el-form :model="taskForm" size="small" :rules="taskRules" ref="taskForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label-width="0">
-            <el-alert type="info" style="line-height: 1.6;" :closable="false" description="如交群员的管理账号被封禁, 则可以通过此方式来通过入群审核并设置新的交群管理" show-icon />
-          </el-form-item>
-          <el-form-item label="设置管理员" prop="relpy_text">
-            <el-input clearable v-model="taskForm.relpy_text" placeholder="请输入管理员" />
-          </el-form-item>
-          <el-form-item>
-            <div class="el-item-right">
-              <el-button @click="dialogVisible=false">{{ $t('sys_c023') }}</el-button>
-              <el-button type="primary" :loading="isLoading" @click="submitForm('taskForm')">{{ $t('sys_c024') }}</el-button>
-            </div>
-          </el-form-item>
-        </el-form> -->
-        <template>
-          <el-table :data="matchDataList" border height="560" style="width: 100%">
-            <el-table-column prop="account" label="账号"  minWidth="150" />
-            <el-table-column prop="date" label="状态"  minWidth="150">
+          <el-table :data="matchDataList" border height="560" style="width: 100%" v-if="showType==1">
+            <template v-if="showType==1">
+              <el-table-column prop="account" label="账号"  minWidth="150" />
+              <el-table-column prop="date" label="状态"  minWidth="150">
+                  <template slot-scope="scope">
+                    <el-tag size="small" :type="scope.row.status==2?'success':scope.row.status==3?'warning':'danger'"> {{ AccountStatus[scope.row.status]||"-" }}</el-tag>
+                  </template>
+              </el-table-column>
+            </template>
+          </el-table>
+          <el-table :data="matchDataList" border height="560" style="width: 100%" v-if="showType==2">
+            <el-table-column prop="account" label="执行账号" minWidth="150" />
+              <el-table-column prop="target_phone" label="目标账号" minWidth="150" />
+              <el-table-column prop="itime" label="创建时间" minWidth="150">
                 <template slot-scope="scope">
-                  <el-tag size="small" :type="scope.row.status==2?'success':scope.row.status==3?'warning':'danger'"> {{ AccountStatus[scope.row.status]||"-" }}</el-tag>
+                  <div>{{scope.row.itime>0?$baseFun.resetTime(scope.row.itime*1000):"-" }}</div>
                 </template>
             </el-table-column>
           </el-table>
-        </template>
       </el-dialog>
       <el-dialog class="custom_header":title="blastForm.relpy_type==2?$t('sys_q131'):$t('sys_q130')" :visible.sync="blastDialog" :close-on-click-modal="false" :width="blastForm.explode_type==1&&blastForm.relpy_type==3?'400px':'560px'" center>
         <el-form v-if="blastForm.relpy_type==3||blastForm.relpy_type==4" size="small" label-width="100px" class="demo-ruleForm">
@@ -272,7 +274,7 @@
 <script>
 import { successTips } from '@/utils/index'
 import material from '../content/material.vue';
-import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad,dobatchclosebiggrouptask} from '@/api/task'
+import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad,dobatchclosebiggrouptask,getbiggroupmember} from '@/api/task'
 export default {
   components: {material,'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer') },
   data() {
@@ -283,6 +285,7 @@ export default {
         total: 0,
         status:"",
         task_name: "",
+        invite_link:""
       },
       taskForm:{
         relpy_type:"",
@@ -302,6 +305,7 @@ export default {
         is_show:1,
         type:0
       },
+      showType:"",
       source_id:"",
       dialogTitle:"",
       imgModel:false,
@@ -403,6 +407,7 @@ export default {
       resetQuery(){
         this.model1.status="";
         this.model1.task_name="";
+        this.model1.invite_link="";
         this.getPullTaskList(1);
         this.$refs.serveTable.clearSelection();
       },
@@ -410,9 +415,11 @@ export default {
         this.model1.status = status;
         this.getPullTaskList(1);
       },
-      async showMatch(row){
-        this.dialogTitle = "拉手详情";
-        let {data:{list}} = await getbiggrouppullaccountlist({id:row.id});
+      async showMatch(row,idx){
+        this.showType = idx;
+        this.dialogTitle = idx==1?"拉手详情":"完成详情";
+        let reqApi = this.showType==1?getbiggrouppullaccountlist:getbiggroupmember;
+        let {data:{list}} = await reqApi({id:row.id});
         this.matchDataList = list||[];
         this.dialogVisible =true;
       },
@@ -438,6 +445,7 @@ export default {
           page:this.model1.page,
           limit:this.model1.limit,
           name:this.model1.task_name,
+          invite_link:this.model1.invite_link,
           status:this.model1.status||-1
         }
         getbiggrouptasklist(params).then(res=>{

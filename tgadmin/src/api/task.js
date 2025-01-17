@@ -182,6 +182,10 @@ export const dobatchdelmarketgroupinfo = (params) =>{
 export const dobatchclosebiggrouptask = (params) =>{
   return request({url:'/biggroup/dobatchclosebiggrouptask',method:'post',data:params})
 }
+export const getbiggroupmember = (params) =>{
+  return request({url:'/biggroup/getbiggroupmember',method:'post',data:params})
+}
+
 
 
 
