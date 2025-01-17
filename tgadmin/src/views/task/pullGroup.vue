@@ -144,7 +144,7 @@
                 <template slot-scope="scope">
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button> -->
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button> -->
-                  <el-button :disabled="checkIdArry.length>0&&scope.row.status!=1||scope.row.status!=2" :type="scope.row.status==2?'danger':'primary'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
+                  <el-button :disabled="checkIdArry.length>0||scope.row.status!=1&&scope.row.status!=2" :type="scope.row.status==2?'danger':'primary'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
                     <span v-text="scope.row.status==2?'关闭任务':'启动任务'"></span>
                   </el-button>
                   <!-- <el-button :disabled="checkIdArry.length>0" type="success" plain size="mini" @click.stop="setAdminBtn(scope.row)">设置管理</el-button> -->
