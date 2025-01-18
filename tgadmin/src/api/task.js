@@ -185,6 +185,12 @@ export const dobatchclosebiggrouptask = (params) =>{
 export const getbiggroupmember = (params) =>{
   return request({url:'/biggroup/getbiggroupmember',method:'post',data:params})
 }
+export const gettaskconf = (params) =>{
+  return request({url:'/biggroup/gettaskconf',method:'post',data:params})
+}
+export const getbiggrouploglist = (params) =>{
+  return request({url:'/biggroup/getbiggrouploglist',method:'post',data:params})
+}
 
 
 

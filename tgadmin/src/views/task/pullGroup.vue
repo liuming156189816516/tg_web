@@ -40,46 +40,12 @@
             <i slot="reference" class="el-icon-info"></i>
             <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
         </div>
-        <!-- <el-table @sort-change="sorthandle" :summary-method="getSummaries" show-summary :data="taskDataList" row-key="id" use-virtual border height="750" v-loading="loading" ref="serveTable"
-          element-loading-spinner="el-icon-loading" style="width: 100%;" showBodyOverflow="title" :total="model1.total" :page-sizes="pageOption" 
-          :page-size="model1.limit" :current-page="model1.page" :pagination-show="true" @selection-change="handleSelectionChange" @row-click="rowSelectChange" @handlePageSize="pageHandle">    -->
           <el-table :summary-method="getSummaries" show-summary :data="taskDataList" row-key="id" use-virtual
             border height="800" v-loading="loading" ref="serveTable" element-loading-spinner="el-icon-loading" style="width: 100%;"
             @selection-change="handleSelectionChange" @row-click="rowSelectChange">  
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" :label="$t('sys_g070')" minWidth="120" />
-            <!-- <el-table-column prop="qname" :label="$t('sys_rai086')" width="120">
-                <template slot-scope="scope">
-                  <el-tooltip class="item" effect="dark" :content="scope.row.qname" placement="top">
-                    <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.qname||"-" }}</div>
-                  </el-tooltip>
-                </template>
-            </el-table-column> -->
-            <!-- <el-table-column prop="qremark" label="群描述" minWidth="120">
-              <template slot-scope="scope" >
-                <el-tooltip class="item" effect="dark" :content="scope.row.qremark||'-'" placement="top-start">
-                  <span style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{scope.row.qremark||'-'}}</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="qavatar" label="群头像" width="120">
-                <template slot-scope="scope">
-                  <el-avatar shape="square" :size="40" :src="scope.row.qavatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" />
-                </template>
-            </el-table-column> -->
             <el-table-column prop="invite_link" show-overflow-tooltip label="邀请链接" minWidth="180" />
-                <!-- <template slot-scope="scope">
-                  <el-tooltip class="item" effect="dark" :content="scope.row.invite_link" placement="top">
-                    <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;text-align: center;">{{ scope.row.invite_link||"-" }}</div>
-                  </el-tooltip>
-                </template>
-            </el-table-column> -->
-            <!-- <el-table-column prop="match_num" label="拉手数量" minWidth="100"> -->
-            <!-- <el-table-column prop="match_num" label="拉手数量" minWidth="100">
-              <template slot-scope="scope">
-                <el-button class="jump_un_link"type="text" :disabled="!scope.row.match_num" @click.stop="scamperBtn(scope.row,1)">{{ scope.row.match_num==null?0:scope.row.match_num }}</el-button>
-              </template>
-            </el-table-column> -->
             <el-table-column prop="match_num" label="拉手数量" width="100">
               <template slot-scope="scope">
                 <div class="jump_un_link" @click.stop="showMatch(scope.row,1)">{{ scope.row.match_num||0 }}</div>
@@ -106,22 +72,6 @@
                 <el-tag size="small" :type="scope.row.status==0||scope.row.status==1?'info':scope.row.status==2?'warning':scope.row.status==5?'success':'danger'"> {{ statusOptions[scope.row.status]||"-" }}</el-tag>
               </template>
             </el-table-column>
-            <!-- <el-table-column prop="zq_num" label="炸群次数" width="100" />
-            <el-table-column prop="match_num" label="拉手数量" width="100">
-              <template slot-scope="scope">
-                <div class="jump_un_link" @click.stop="showMatch(scope.row)">{{ scope.row.match_num||0 }}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="pull_num" label="单次拉人数" minWidth="120" />
-            <el-table-column prop="end_num" label="截止人数" width="100" />
-            <el-table-column prop="target_num" label="目标人数" width="100" />
-            <el-table-column prop="reason" label="原因" minWidth="120">
-                <template slot-scope="scope">
-                  <el-tooltip class="item" effect="dark" :content="scope.row.reason" placement="top">
-                    <div style="width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{ scope.row.reason||"-" }}</div>
-                  </el-tooltip>
-                </template>
-            </el-table-column> -->
             <el-table-column prop="itime" :label="$t('sys_c008')" minWidth="160">
                 <template slot-scope="scope">
                   <div>{{scope.row.itime>0?$baseFun.resetTime(scope.row.itime*1000):"-" }}</div>
@@ -147,8 +97,10 @@
                 </el-button>
               </template>
             </el-table-column> -->
-            <el-table-column fixed="right" :label="$t('sys_c010')" width="120">
+            <el-table-column fixed="right" :label="$t('sys_c010')" width="250">
                 <template slot-scope="scope">
+                  <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showConfig(scope.row)">{{ $t('sys_m063') }}</el-button>
+                  <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showDiary(scope.row)">{{ $t('sys_m064') }}</el-button>
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button> -->
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button> -->
                   <el-button :disabled="checkIdArry.length>0||scope.row.status!=1&&scope.row.status!=2" :type="scope.row.status==2?'danger':'primary'" plain size="mini" @click.stop="handleTaskBtn(scope.row)">
@@ -168,7 +120,7 @@
         </div>
         <!-- <el-pagination :total="model1.total" style="display: none;" /> -->
       </div>
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false" width="560px" center>
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false" :width="showType!=3?'560px':'40%'" center>
           <el-table :data="matchDataList" border height="560" style="width: 100%" v-if="showType==1">
             <template v-if="showType==1">
               <el-table-column prop="account" label="账号"  minWidth="150" />
@@ -269,12 +221,23 @@
       <el-dialog :title="$t('sys_mat108')" center :visible.sync="showSource" :close-on-click-modal="false" width="60%">
         <material :key="Math.floor(new Date().getTime())" @changeEle="getChildren" @closeDialog="showSource=false" :message="childMess" />
       </el-dialog>
+
+      <el-dialog :title="$t('sys_m063')" center :visible.sync="taskConfig" :close-on-click-modal="false" width="50%">
+        <el-table :data="taskConfigData" border v-loading="configLoading" minHeight="max-content" element-loading-spinner="el-icon-loading" style="width: 100%;">  
+            <el-table-column prop="data_pack_name" :label="$t('sys_rai090')" minWidth="120" />
+            <el-table-column prop="target_num" :label="$t('sys_m065')" minWidth="120" />
+            <el-table-column prop="match_num" :label="$t('sys_m066')" minWidth="120" />
+            <el-table-column prop="pull_num" :label="$t('sys_m067')" minWidth="120" />
+            <el-table-column prop="interval_time" :label="$t('sys_m069')" minWidth="120" />
+            <el-table-column prop="upper_limit" :label="$t('sys_m070')" minWidth="120" />
+        </el-table>
+      </el-dialog>
     </div>
 </template>
 <script>
 import { successTips } from '@/utils/index'
 import material from '../content/material.vue';
-import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad,dobatchclosebiggrouptask,getbiggroupmember} from '@/api/task'
+import { getbiggrouptasklist,startbiggrouptask,dobatchstoppullgrouptask,dobatchclosepullgrouptask,getsysconfig,upsysconfig,dobatchdelbiggrouptask,getbiggrouppullaccountlist,biggroupsendmsg,upautoad,dobatchclosebiggrouptask,getbiggroupmember,gettaskconf,getbiggrouploglist} from '@/api/task'
 export default {
   components: {material,'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer') },
   data() {
@@ -311,15 +274,18 @@ export default {
       imgModel:false,
       loading:false,
       isLoading:false,
+      taskConfig:false,
       blastDialog:false,
       auto_scamper:false,
       explodeDialog:false,
+      configLoading:false,
       source_type:null,
       matchDataList:[],
       checkIdArry:[],
       taskDataList:[],
       showNum:[3,4,5],
       materialData:[],
+      taskConfigData:[],
       dialogVisible:false
     }
   },
@@ -363,6 +329,13 @@ export default {
     this.getPullTaskList();
   },
   methods: {
+      async showConfig(row){
+        this.taskConfig = true;
+        this.configLoading=true;
+        const {data} = await gettaskconf({id:row.id});
+        this.taskConfigData = [data];
+        this.configLoading=false;
+      },
       showPropModel(){
         this.source_id = "";
         this.childMess.type="";
@@ -417,11 +390,16 @@ export default {
       },
       async showMatch(row,idx){
         this.showType = idx;
-        this.dialogTitle = idx==1?"拉手详情":"完成详情";
-        let reqApi = this.showType==1?getbiggrouppullaccountlist:getbiggroupmember;
+        this.dialogTitle = idx==1?"拉手详情":idx==2?"完成详情":"任务日志";
+        let reqApi = this.showType==1?getbiggrouppullaccountlist:this.showType==2?getbiggroupmember:getbiggrouploglist;
+        this.configLoading = true;
         let {data:{list}} = await reqApi({id:row.id});
+        this.configLoading = false;
         this.matchDataList = list||[];
         this.dialogVisible =true;
+      },
+      showDiary(row){
+        this.$router.push({path:'/task_diary',query:{task_id:row.id}});
       },
       scamperBtn(row,type){
         console.log(type);

@@ -400,6 +400,15 @@ export const asyncRoutes = [
         }
       },
       {
+        hidden: true,
+        path: '/task_diary',
+        component: () => import('@/views/task/task_diary'),
+        name: 'task_diary',
+        meta: {
+          title:i18n.t('sys_m064')
+        }
+      },
+      {
         // hidden: true,
         path: '/super-task-detail',
         component: () => import('@/views/task/super-task-detail'),
