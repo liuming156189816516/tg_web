@@ -120,7 +120,7 @@
         </div>
         <!-- <el-pagination :total="model1.total" style="display: none;" /> -->
       </div>
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false" width="560px" center>
+      <el-dialog :title="dialogTitle" v-if="dialogVisible" :visible.sync="dialogVisible" :close-on-click-modal="false" width="560px" center>
           <el-table :data="matchDataList" border height="560" row-key="account" style="width: 100%" v-if="showType==1">
             <el-table-column prop="account" label="账号"  minWidth="150" />
             <el-table-column prop="date" label="状态"  minWidth="150">
@@ -129,7 +129,7 @@
                 </template>
             </el-table-column>
           </el-table>
-          <el-table :data="matchDataList" border height="560" style="width: 100%" v-if="showType==2||new Date()">
+          <el-table :data="matchDataList" border height="560" style="width: 100%" v-if="showType==2">
             <el-table-column prop="account" label="执行账号" minWidth="150" />
               <el-table-column prop="target_phone" label="目标账号" minWidth="150"/>
               <el-table-column prop="itime" label="创建时间" minWidth="150">
