@@ -34,7 +34,7 @@
               <el-tag size="small" :type="scope.row.status==1?'success':'danger'"> {{ statusOptions[scope.row.status]||"-" }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column prop="reason" :label="$t('sys_m072')" minWidth="120">
+        <el-table-column prop="reason" :label="$t('sys_m072')" minWidth="120" show-overflow-tooltip>
           <template slot-scope="scope">
             {{ scope.row.reason||"-" }}
           </template>
