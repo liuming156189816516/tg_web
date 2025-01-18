@@ -31,7 +31,7 @@
                 </el-dropdown>
             </template>
             <template slot-scope="scope">
-              <el-tag size="small" :type="scope.row.status==1?'info':scope.row.status==2?'warning':scope.row.status==5?'success':'danger'"> {{ statusOptions[scope.row.status]||"-" }}</el-tag>
+              <el-tag size="small" :type="scope.row.status==1?'success':'danger'"> {{ statusOptions[scope.row.status]||"-" }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="reason" :label="$t('sys_m072')" minWidth="120">
