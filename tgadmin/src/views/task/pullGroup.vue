@@ -97,9 +97,10 @@
                 </el-button>
               </template>
             </el-table-column> -->
-            <el-table-column fixed="right" :label="$t('sys_c010')" width="250">
+            <el-table-column fixed="right" :label="$t('sys_c010')" width="260">
                 <template slot-scope="scope">
-                  <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showConfig(scope.row)">{{ $t('sys_m063') }}</el-button>
+                  <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showConfig(scope.row)">{{ $t('sys_m073') }}</el-button>
+                  <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showConfig(scope.row)">{{ $t('sys_m063') }}</el-button> -->
                   <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="showDiary(scope.row)">{{ $t('sys_m064') }}</el-button>
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,3)">{{ $t('sys_rai098') }}</el-button> -->
                   <!-- <el-button :disabled="checkIdArry.length>0" type="primary" plain size="mini" @click.stop="scamperBtn(scope.row,2)">{{ $t('sys_q131') }}</el-button> -->
@@ -328,11 +329,12 @@ export default {
   },
   methods: {
       async showConfig(row){
-        this.taskConfig = true;
-        this.configLoading=true;
-        const {data} = await gettaskconf({id:row.id});
-        this.taskConfigData = [data];
-        this.configLoading=false;
+        this.$router.push({path:"/ws-creat-group",query:{row}})
+        // this.taskConfig = true;
+        // this.configLoading=true;
+        // const {data} = await gettaskconf({id:row.id});
+        // this.taskConfigData = [data];
+        // this.configLoading=false;
       },
       showPropModel(){
         this.source_id = "";

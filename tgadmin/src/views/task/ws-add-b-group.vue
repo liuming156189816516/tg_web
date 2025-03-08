@@ -265,6 +265,8 @@
             invite_link:"",
             relpy_text:"",
             data_pack_id:"",
+            interval_time:"",
+            upper_limit:"",
             materialData:[],
         },
         datapackList:[],
@@ -295,8 +297,8 @@
                 match_num: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
                 invite_link: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
                 data_pack_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-                interval_time: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
-                upper_limit: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+                interval_time: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
+                upper_limit: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
 
                 materialData: [{required: true, required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 relpy_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' },{ max: 2000, message: '最多可输入2000个字符', trigger: 'blur' }],
@@ -313,6 +315,22 @@
         // let taskConfig = this.$route.query.config;
         this.getPullGroup();
         this.getDatalist();
+    },
+    mounted(){
+        let taskConfig = this.$route.query.row;
+        if (taskConfig instanceof Object) {
+            if(taskConfig.config_str){
+                const config =JSON.parse(taskConfig.config_str);
+                this.taskForm.task_name=config.name;
+                this.taskForm.pull_num=config.pull_num;
+                this.taskForm.match_num=config.match_num;
+                this.taskForm.target_num=config.target_num;
+                this.taskForm.invite_link=config.invite_link;
+                this.taskForm.ad_group_id=config.ad_group_id;
+                this.taskForm.interval_time=config.interval_time;
+                this.taskForm.upper_limit=config.upper_limit;
+            }
+        }
     },
     methods:{
         async getPullGroup(){
@@ -359,6 +377,16 @@
                         return item;
                     });
                     let params = {
+                        config_str:JSON.stringify({
+                            name:this.taskForm.task_name,
+                            pull_num:this.taskForm.pull_num,
+                            match_num:this.taskForm.match_num,
+                            target_num:this.taskForm.target_num,
+                            invite_link:this.taskForm.invite_link,
+                            ad_group_id:this.taskForm.ad_group_id,
+                            interval_time:this.taskForm.interval_time,
+                            upper_limit:this.taskForm.upper_limit
+                        }),
                         name:this.taskForm.task_name,
                         pull_num:Number(this.taskForm.pull_num),
                         // qname:this.taskForm.qname,
