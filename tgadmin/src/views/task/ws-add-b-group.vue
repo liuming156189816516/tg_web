@@ -140,6 +140,16 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="18">
+                        <el-form-item label="拉手退群：" prop="is_out_group">
+                            <el-radio-group v-model="taskForm.is_out_group">
+                                <el-radio :label="1">是</el-radio>
+                                <el-radio :label="2">否</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
                 <!-- <el-row :gutter="20">
                     <el-col :span="18">
                         <el-form-item label="群发话术：" prop="relpy_text">
@@ -240,8 +250,8 @@
                 return time.getTime() < Date.now() || time.getTime() > lastChooseDate
             }
         },
-        matchOptions:[3,5,10,20,30,50],
-        targetOptions:[260,300,500,1000,1500],
+        matchOptions:[3,5,10,20,30,50,100],
+        targetOptions:[260,300,500,1000,1500,5000],
         pickerOptions: {
             disabledDate(time) {
                 let currentDate = new Date().getTime()
@@ -267,6 +277,7 @@
             data_pack_id:"",
             interval_time:"",
             upper_limit:"",
+            is_out_group:1,
             materialData:[],
         },
         datapackList:[],
@@ -299,7 +310,7 @@
                 data_pack_id: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 interval_time: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
                 upper_limit: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' }],
-
+                is_out_group: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 materialData: [{required: true, required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 relpy_text: [{ required: true, message: this.$t('sys_mat021'), trigger: 'blur' },{ max: 2000, message: '最多可输入2000个字符', trigger: 'blur' }],
             }
@@ -325,10 +336,11 @@
                 this.taskForm.pull_num=config.pull_num;
                 this.taskForm.match_num=config.match_num;
                 this.taskForm.target_num=config.target_num;
-                this.taskForm.invite_link=config.invite_link;
+                // this.taskForm.invite_link=config.invite_link;
                 this.taskForm.ad_group_id=config.ad_group_id;
                 this.taskForm.interval_time=config.interval_time;
                 this.taskForm.upper_limit=config.upper_limit;
+                this.taskForm.is_out_group=config.is_out_group;
             }
         }
     },
@@ -385,7 +397,8 @@
                             invite_link:this.taskForm.invite_link,
                             ad_group_id:this.taskForm.ad_group_id,
                             interval_time:this.taskForm.interval_time,
-                            upper_limit:this.taskForm.upper_limit
+                            upper_limit:this.taskForm.upper_limit,
+                            is_out_group:this.taskForm.is_out_group,
                         }),
                         name:this.taskForm.task_name,
                         pull_num:Number(this.taskForm.pull_num),
@@ -401,6 +414,7 @@
                         invite_link:this.taskForm.invite_link,
                         interval_time:Number(this.taskForm.interval_time),
                         upper_limit:Number(this.taskForm.upper_limit),
+                        is_out_group:Number(this.taskForm.is_out_group),
                         // ad:this.taskForm.relpy_text,
                         // material_list:materialItem
                     }
