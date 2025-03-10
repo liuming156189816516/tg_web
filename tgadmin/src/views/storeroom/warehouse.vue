@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item class="el-item-right">
         <el-button type="danger" :disabled="checkIdArry.length==0" @click="batchDel">{{ $t('sys_l048') }}</el-button>
-        <!-- <el-button type="warning" :disabled="checkIdArry.length==0" @click="exportModel=true">{{ $t('sys_mat050') }}</el-button> -->
+        <el-button type="warning" :disabled="checkIdArry.length==0" @click="exportModel=true">{{ $t('sys_mat050') }}</el-button>
         <el-button type="success" style="margin-left: 10px;" @click="batchExport"> {{ $t('sys_c111') }}</el-button>
       </el-form-item>
     </el-form>
@@ -172,7 +172,7 @@
             <el-col :span="24" v-if="stepsActive==2&&!checkLoading">
               <el-form-item label-width="0" style="margin-bottom: 14px;">
                 <div class="upload_img">
-                  <img style="width: 140px;height: 140px;margin-bottom: 10px;" src="../../assets/upload_03.png" alt="" srcset="">
+                  <img style="width: 140px;height: 140px;margin-bottom: 10px;" src="../../assets/upload_03.png">
                   <template v-if="success_number>0||fail_number>0">
                     <div>{{ $t('sys_c115') }}</div>
                     <div v-html="$t('sys_c116',{s_number:success_number,f_number:fail_number})"></div>
@@ -183,7 +183,7 @@
                   </template>
                   <template v-else>
                     <div style="display: flex;align-items: center;">
-                      检测中... <img style="width: 20px; height: 20px;margin-left: 10px;" src="../../assets/loading_icon.gif" alt="" srcset="">
+                      检测中... <img style="width: 20px; height: 20px;margin-left: 10px;" src="../../assets/loading_icon.gif">
                     </div>
                   </template>
                 </div>
@@ -334,7 +334,6 @@ export default {
     }
   },
   created() {
-    this.initGroup();
     this.initDatalist();
   },
   methods: {
@@ -400,6 +399,7 @@ export default {
       },600)
     },
     batchExport(){
+      this.initGroup();
       this.storeModel = true;
       this.$nextTick(()=>{
         this.storeIdx=1;
@@ -534,6 +534,7 @@ export default {
           dooutputaccountlog({ptype:this.accountForm.export_type,ids:this.checkIdArry}).then(res => {
             this.isDownLoading=false;
             if (res.code != 0) return;
+            this.initDatalist();
             this.exportModel=false;
             location.href = res.data.url;
           })

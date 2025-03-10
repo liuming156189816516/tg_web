@@ -515,7 +515,7 @@ export default {
     'sys_mat036': '导出剩余数据',
     'sys_mat037': '剩余数据粉丝明细',
     'sys_mat038': '合计{value}条',
-    'sys_mat039': 'ZIP',
+    'sys_mat039': 'ZIP(session文件)',
     'sys_mat040': 'TXT',
     'sys_mat041': '',
     'sys_mat042': '无效数据',

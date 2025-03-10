@@ -622,6 +622,21 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+
+        <!-- 批量导出 -->
+        <el-dialog :title="setIpName" center :visible.sync="exportModel" :close-on-click-modal="false" width="450px">
+            <el-form size="small" label-width="100px">
+                <el-form-item :label="$t('sys_mat055') + ':'" style="margin-bottom: 20px;">
+                    <el-radio-group v-model="data_type">
+                        <el-radio :label="idx" v-for="(item,idx) in accountOption" :key="idx" v-show="item!=''">{{ item }}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label-width="0" style="text-align:center;margin-top: 40px;">
+                    <el-button @click="exportModel = false">{{ $t('sys_c023') }}</el-button>
+                    <el-button type="primary" @click="downBtn" :loading="isDoading">{{$t('sys_c024') }}</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -655,6 +670,7 @@ export default {
                 expire_status: "",
                 disable_status: "",
             },
+            data_type:1,
             seatPage:1,
             seatLimit:10,
             seatTotal:0,
@@ -669,6 +685,7 @@ export default {
             numberGroupList: [],
             staffGroupList: [],
             loading: false,
+            exportModel:false,
             closeModel: false,
             is_show_id: false,
             ipLoading: false,
@@ -707,6 +724,7 @@ export default {
             groupIdx: "",
             materType: "",
             checkedNum: 0,
+            isDoading:false,
             isLoading: false,
             visible: false,
             addVisible: false,
@@ -749,6 +767,9 @@ export default {
         }
     },
     computed: {
+        accountOption(){
+            return ["",this.$t('sys_mat039'),this.$t('sys_mat040')]
+        },
         tableHrad(){
             return [
                 this.$t('sys_g021'),this.$t('sys_g021'),this.$t('sys_g021'),
@@ -1337,9 +1358,24 @@ export default {
                 })
             } else if (this.setIpType == 6) {
                 this.$router.push({path:'/modify-wa-profile',query:{accounts:String(this.checkAccount)}});
+            }  else if (this.setIpType == 4) {
+                this.data_type = 1;
+                this.exportModel=true;
+                // this.popconfirm();
             } else {
                 this.popconfirm();
             }
+        },
+        downBtn(){
+            this.isDoading=true;
+            dooutputaccount({ptype:this.data_type,accounts:this.checkAccount}).then(res=>{
+                this.isDoading=false;
+                if(res.data.url){
+                    this.exportModel=false;
+                    window.location.href = res.data.url;
+                    successTips(this)
+                }
+            })
         },
         jumpServeicBtn(row,type){
             if (type == 1 && row.staff_no) {
