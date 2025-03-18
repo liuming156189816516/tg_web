@@ -285,6 +285,7 @@ export default {
       deviceType:2,
       stepsActive:1,
       errFileUrl:"",
+      file_id:"",
       setInter:2000,
       waitTimer:null,
       accountForm: {
@@ -418,9 +419,10 @@ export default {
       this.$refs[formName].validate(valid=>{})
     },
     async checkDataIsUse() {
+      this.file_id = "";
       this.errFileUrl = "";
-      this.success_list = [];
       this.fail_number = 0;
+      this.success_list = [];
       this.success_number = 0;
       let files = this.$refs.uploadclear.files[0];
       let formData = new FormData();
@@ -432,6 +434,7 @@ export default {
       const result = await checkaccountfile(formData);
       this.stepsHide=true;
       if (result.code != 0) return;
+      this.file_id = result.data.id;
       this.errFileUrl = result.data.url;
       this.success_name = result.data.name;
       this.success_list = result.data.success_list;
@@ -440,6 +443,7 @@ export default {
     },
     async exportDataBtn(){
       let params = {
+        id:this.file_id,
         name:this.success_name,
         account_type:this.deviceType,
         success_list:this.success_list,
@@ -581,6 +585,7 @@ export default {
       if (!val) {
         this.deviceType=2;
         this.stepsActive=1;
+        this.file_id = "";
         this.errFileUrl = "";
         this.success_name = 0;
         this.success_list = [];
