@@ -282,7 +282,7 @@ export default {
       matchDataList:[],
       checkIdArry:[],
       taskDataList:[],
-      showNum:[3,4,5],
+      showNum:[5],
       materialData:[],
       taskConfigData:[],
       dialogVisible:false
