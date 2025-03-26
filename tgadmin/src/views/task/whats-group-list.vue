@@ -14,14 +14,14 @@
 
         <el-form-item>
           <el-dropdown @command="(command)=>{handleCommand(0,command)}" trigger="click" style="margin-left:10px;">
-            <el-button type="success"> {{ $t('sys_g018') }}
-                <i class="el-icon-arrow-down el-icon--right"></i>
+            <el-button :disabled="checkIdArry.length==0" type="success"> {{ $t('sys_g018') }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :disabled="checkIdArry.length==0" v-for="(item, idx) in moreOption" :key="idx" :command="{item,idx}" v-show="idx!=0">
-                  <i :class="'el-icon-' + item.icon"></i>
-                  {{ item.label }}
-                </el-dropdown-item>
+              <el-dropdown-item v-for="(item, idx) in moreOption" :key="idx" :command="{item,idx}" v-show="idx!=0">
+                <i :class="'el-icon-' + item.icon"></i>
+                {{ item.label }}
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-form-item>
@@ -32,7 +32,7 @@
             <i slot="reference" class="el-icon-info"></i>
             <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
         </div>
-        <el-table @sort-change="sorthandle" :data="taskDataList" border height="660" v-loading="loading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange">
+        <el-table @sort-change="sorthandle" :data="taskDataList" border :height="cliHeight" v-loading="loading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange" :summary-method="getSummaries" show-summary>
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" :label="$t('sys_g070')" width="120" />
             <el-table-column prop="online" :label="$t('sys_mat058')" minWidth="120">
@@ -40,18 +40,28 @@
                   {{ scope.row.account_num }}
                 </template>
             </el-table-column>
-            <el-table-column prop="pwd_str" :label="$t('sys_mat047')+'/'+$t('sys_g071')" minWidth="130">
+            <el-table-column prop="sucess_num" :label="$t('sys_mat047')" minWidth="130">
               <template slot-scope="scope">
-                {{ scope.row.sucess_num }}/{{ scope.row.send_num }}
+                {{ scope.row.sucess_num }}
               </template>
             </el-table-column>
-             <el-table-column prop="arrived_num" :label="$t('sys_mat115')" minWidth="120">
+            <el-table-column prop="arrived_num" :label="$t('sys_mat115')" minWidth="120">
               <template slot-scope="scope">
                 {{ scope.row.arrived_num||"-" }}
               </template>
             </el-table-column>
-            <el-table-column prop="complete_message" :label="$t('sys_g072')" minWidth="120" />
-            <el-table-column prop="status" :label="$t('sys_l059')" minWidth="160">
+            <el-table-column prop="arrived_rate" :label="$t('sys_mat116')" minWidth="120">
+              <template slot-scope="scope">
+                {{ parseFloat((scope.row.arrived_rate||0*100).toFixed(2))+"%" || 0 }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="in_pro_num" :label="$t('sys_l072')" minWidth="120">
+              <template slot-scope="scope">
+                {{ scope.row.in_pro_num||"-" }}
+              </template>
+            </el-table-column>
+            <!-- <el-table-column prop="complete_message" :label="$t('sys_g072')" minWidth="120" /> -->
+            <el-table-column prop="status" :label="$t('sys_l059')" minWidth="100">
               <template slot="header">
                 <el-dropdown trigger="click" size="medium " @command="(command) => handleNewwork(command)">
                   <span style="color:#909399" :class="[model1.status?'dropdown_title':'']"> {{ $t('sys_l059') }}
@@ -92,7 +102,7 @@
             </el-table-column>
             <el-table-column fixed="right" :label="$t('sys_c010')" width="330">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="small" @click="jumpCreatTask(scope.row,1)">{{ $t('sys_c077') }}</el-button>
+                    <el-button :disabled="checkIdArry.length>0" type="primary" size="small" @click="jumpCreatTask(scope.row,1)">{{ $t('sys_c077') }}</el-button>
                     <el-button :disabled="checkIdArry.length>0" type="primary" size="mini" @click.stop="goTaskDetail(scope.row)">{{ $t('sys_c078') }}</el-button>
                     <el-button :disabled="checkIdArry.length>0" type="success" plain size="mini" @click.stop="exportText(scope.row)">{{ $t('sys_c080') }}</el-button>
                     <!-- <el-button type="success" plain>成功按钮</el-button> -->
@@ -138,6 +148,8 @@ export default {
         status:"",
         task_name: "",
       },
+      cliHeight:null,
+      showNum:[3,4],
       loading:false,
       checkIdArry:[],
       pageOption: resetPage(),
@@ -192,6 +204,13 @@ export default {
   created() {
     this.getTaskList();
   },
+  mounted() {
+      this.setFullHeight();
+      window.addEventListener("resize", this.setFullHeight);
+  },
+  beforeDestroy() {
+      window.removeEventListener("resize", this.setFullHeight);
+  },
   methods: {
       resetQuery(){
         this.model1.status="";
@@ -202,6 +221,9 @@ export default {
         this.model1.status = status;
         console.log(this.model1.status);
         this.getTaskList(1);
+      },
+      setFullHeight(){
+        this.cliHeight = document.documentElement.clientHeight-280;
       },
       getTaskList(num){
         this.loading=true;
@@ -216,6 +238,11 @@ export default {
           this.loading=false;
           this.model1.total = res.data.total;
           this.taskDataList = res.data.list||[];
+          this.$nextTick(()=>{
+            if (this.$refs.serveTable) {
+              this.$refs.serveTable.doLayout(); 
+            }
+          })
         })
       },
       goTaskDetail(row){
@@ -288,7 +315,30 @@ export default {
             // this.getTaskList();
             window.location.href = res.data.url
         })
-      }
+      },
+      getSummaries(param) {
+        const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          const values = data.map(item => Number(item[column.property]));
+          if (index === 0) {
+            sums[index] = this.$t('sys_c125');
+            return;
+          }else if(this.showNum.indexOf(index) > -1){
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return (prev+curr);
+              } else {
+                return prev;
+              }
+            },0);
+          }else{
+            sums[index] = '--';	
+          }
+        });
+			  return sums;
+		},
   }
 }
 </script>
