@@ -26,7 +26,7 @@
                  </el-row> -->
                  <el-row :gutter="20">
                      <el-col :span="18">
-                         <el-form-item label="选择WS账号：" prop="group_id" class="custom_mess">
+                         <el-form-item label="选择TG账号：" prop="group_id" class="custom_mess">
                              <div class="mess_01">
                                  <div class="mess_t_01">
                                      <span class="mess_t_02" style="cursor: pointer;" @click="clearWsBtn">{{ $t('sys_c049') }}</span>
@@ -45,9 +45,9 @@
                  </el-row>
                  <el-row :gutter="20">
                      <el-col :span="18">
-                         <el-form-item label="选择WS数据：" prop="ws_data">
+                         <el-form-item label="选择TG数据：" prop="ws_data">
                              <el-radio-group v-model="taskForm.ws_data">
-                                 <el-radio :label="1">WS粉丝数据</el-radio>
+                                 <el-radio :label="1">TG粉丝数据</el-radio>
                                  <!-- <el-radio label="群发未回复粉丝数据"></el-radio> -->
                              </el-radio-group>
                          </el-form-item>
@@ -144,7 +144,7 @@
                          </el-col>
                      </el-row>
                  </el-collapse-transition>
-                 <el-row :gutter="20">
+                 <!-- <el-row :gutter="20">
                      <el-col :span="18">
                          <el-form-item label="添加好友：" prop="is_friend">
                              <el-radio-group v-model="taskForm.is_friend">
@@ -152,7 +152,7 @@
                              </el-radio-group>
                          </el-form-item>
                      </el-col>
-                 </el-row>
+                 </el-row> -->
                  <h3 class="mess_title">话术设置</h3>
                  <el-divider></el-divider>
                  <!-- <el-row :gutter="20">
@@ -385,7 +385,7 @@
              this.taskForm.sleep1_num=config.min_time;
              this.taskForm.sleep2_num=config.max_time;
              this.taskForm.group_type= config.send_type||0;
-             this.taskForm.is_friend = config.is_add_friend||0;
+            //  this.taskForm.is_friend = config.is_add_friend||0;
              this.taskForm.data_type = taskConfig.ws_data;
              this.taskForm.data_pack_id = taskConfig.data_pack_id;
              this.taskForm.send_type = taskConfig.group_type;
@@ -476,7 +476,7 @@
                              send_num:this.taskForm.group1_num,
                              min_time:this.taskForm.sleep1_num,
                              max_time:this.taskForm.sleep2_num,
-                             is_add_friend:this.taskForm.is_friend,
+                            //  is_add_friend:this.taskForm.is_friend,
                              // speech_skill_type:this.taskForm.group_say,
                              material_num:this.taskForm.materialData.length,
                              // replenish:this.taskForm.set_add
@@ -493,7 +493,7 @@
                          // interval_send_time:this.taskForm.sleep_num,
                          min_time:this.taskForm.sleep1_num,
                          max_time:this.taskForm.sleep2_num,
-                         is_add_friend:this.taskForm.is_friend,
+                        //  is_add_friend:this.taskForm.is_friend,
                          // speech_skill_type:this.taskForm.group_say,
                          material_list:materialItem,
                          // replenish:this.taskForm.set_add

@@ -32,7 +32,7 @@
             <i slot="reference" class="el-icon-info"></i>
             <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
         </div>
-        <el-table @sort-change="sorthandle" :data="taskDataList" border :height="cliHeight" v-loading="loading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange" :summary-method="getSummaries" show-summary>
+        <el-table @sort-change="sorthandle" :data="taskDataList" border :height="cliHeight" v-loading="loading" element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)" style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" :cell-style="{ textAlign: 'center' }" ref="serveTable" @selection-change="handleSelectionChange" @row-click="rowSelectChange">
             <el-table-column type="selection" width="55" />
             <el-table-column prop="name" :label="$t('sys_g070')" width="120" />
             <el-table-column prop="online" :label="$t('sys_mat058')" minWidth="120">
@@ -238,11 +238,11 @@ export default {
           this.loading=false;
           this.model1.total = res.data.total;
           this.taskDataList = res.data.list||[];
-          this.$nextTick(()=>{
-            if (this.$refs.serveTable) {
-              this.$refs.serveTable.doLayout(); 
-            }
-          })
+          // this.$nextTick(()=>{
+          //   if (this.$refs.serveTable) {
+          //     this.$refs.serveTable.doLayout(); 
+          //   }
+          // })
         })
       },
       goTaskDetail(row){
