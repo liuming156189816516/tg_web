@@ -50,7 +50,7 @@
                 {{ scope.row.arrived_num||"-" }}
               </template>
             </el-table-column>
-            <el-table-column prop="arrived_rate" :label="$t('sys_mat116')" minWidth="120">
+            <!-- <el-table-column prop="arrived_rate" :label="$t('sys_mat116')" minWidth="120">
               <template slot-scope="scope">
                 {{ parseFloat((scope.row.arrived_rate||0*100).toFixed(2))+"%" || 0 }}
               </template>
@@ -59,7 +59,7 @@
               <template slot-scope="scope">
                 {{ scope.row.in_pro_num||"-" }}
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <!-- <el-table-column prop="complete_message" :label="$t('sys_g072')" minWidth="120" /> -->
             <el-table-column prop="status" :label="$t('sys_l059')" minWidth="100">
               <template slot="header">
