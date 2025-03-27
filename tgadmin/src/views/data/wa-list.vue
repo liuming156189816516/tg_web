@@ -18,12 +18,17 @@
                 <div v-html="$t('sys_mat007',{value:checkIdArry.length})"></div>
             </div>
             <div>
-                <el-table :data="dataList" border height="680" v-loading="loading" :summary-method="getSummaries" show-summary
+                <el-table :data="dataList" border :height="cliHeight" v-loading="loading" :summary-method="getSummaries" show-summary
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(255, 255, 255,1)"
                     style="width: 100%;" :header-cell-style="{ color: '#909399', textAlign: 'center' }" ref="serveTable"
                     :cell-style="{ textAlign: 'center' }" @selection-change="handleSelectionChange" @row-click="rowSelectChange">
                     <el-table-column type="selection" width="55" />
                     <el-table-column prop="name" :label="$t('sys_mat027')" minWidth="140" />
+                    <el-table-column prop="up_status" :label="$t('sys_m074')" minWidth="100">
+                        <template slot-scope="scope">
+                            {{ dataType[scope.row.data_type]||"-" }}
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="invalid_num" :label="$t('sys_mat042')" minWidth="100" />
                     <el-table-column prop="up_num" :label="$t('sys_mat028')" minWidth="100" />
                     <el-table-column prop="source_repeat_num" :label="$t('sys_mat029')" minWidth="100" />
@@ -112,6 +117,14 @@
                                 <div class="label_title">{{ $t('sys_g130') }}</div>
                                 <el-radio-group v-model="ipForm.data_way">
                                     <el-radio :label="idx" v-for="(item,idx) in dataOption" :key="idx" v-show="item!=''">{{ item }}</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-form-item prop="data_type">
+                                <div class="label_title">{{ $t('sys_m074') }}</div>
+                                <el-radio-group v-model="ipForm.data_type">
+                                    <el-radio :label="idx" v-for="(item,idx) in dataType" :key="idx" v-show="item!=''">{{ item }}</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                         </el-col>
@@ -248,6 +261,7 @@ export default {
                 task_name: ""
             },
             Loading:"",
+            cliHeight:null,
             percentage: 0,
             stepsActive: 1,
             ipModelType: "",
@@ -273,6 +287,7 @@ export default {
                 file_name:"",
                 data_way:1,
                 ip_file: "",
+                data_type:1,
                 is_err:1
             },
             model2: {
@@ -290,9 +305,13 @@ export default {
         ipRules() {
             return {
                 data_way: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
+                data_type: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 is_err: [{ required: true, message: this.$t('sys_c052'), trigger: 'change' }],
                 file_name: [{ required: true, message: this.$t('sys_mat024'), trigger: 'blur' }]
             }
+        },
+        dataType(){
+            return ["",this.$t('sys_m075'), this.$t('sys_c061')]
         },
         dataOption(){
             return ["",this.$t('sys_mat022'), this.$t('sys_mat023')]
@@ -313,6 +332,13 @@ export default {
     created() {
         this.initDatalist();
     },
+    mounted() {
+        this.setFullHeight();
+        window.addEventListener("resize", this.setFullHeight);
+    },
+    beforeDestroy() {
+        window.removeEventListener("resize", this.setFullHeight);
+    },
     methods: {
         showLeaveNum(row){
             this.model2.page=1;
@@ -327,6 +353,9 @@ export default {
                 this.model2.total = res.data.total;
                 this.residueList = res.data.list||[]
             })
+        },
+        setFullHeight(){
+            this.cliHeight = document.documentElement.clientHeight-280;
         },
         lazyScroll(){
             let scrollEle = this.$refs.lazyEle;
@@ -422,6 +451,7 @@ export default {
             formData.append('ptype',this.ipModelType);
             formData.append('name', this.ipForm.file_name);
             formData.append('into_type',this.ipForm.data_way);
+            formData.append('data_type',this.ipForm.data_type);
             // formData.append('is_err',this.ipForm.is_err);
             if (this.ipModelType == 2) {
                 formData.append('id',this.ipForm.id);
