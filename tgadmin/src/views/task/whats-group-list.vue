@@ -149,7 +149,7 @@ export default {
         task_name: "",
       },
       cliHeight:null,
-      showNum:[3,4],
+      showNum:[3],
       loading:false,
       checkIdArry:[],
       pageOption: resetPage(),
