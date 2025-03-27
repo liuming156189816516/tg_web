@@ -132,7 +132,7 @@
                                  <div class="number_01">
                                      <span class="number_02">每个账号群发间隔为：</span>
                                      <span class="number_03">
-                                         <el-input-number @blur="handleKeyUp" v-model ="taskForm.sleep1_num" type="number" :min="60" style="width: 120px;" />
+                                         <el-input-number v-model ="taskForm.sleep1_num" type="number" :min="1" style="width: 120px;" />
                                      </span>
                                      <span class="number_02">~</span>
                                      <span class="number_03">
