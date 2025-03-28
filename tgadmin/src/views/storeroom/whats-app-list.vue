@@ -187,7 +187,7 @@
                 </div>
                 <el-button v-if="loadingGroup" class="loading_icon" type="primary" :loading="true"></el-button>
                 <template v-else>
-                    <div class="group_warp">
+                    <div class="group_warp" :style="{height:(cliHeight-40)+'px'}">
                         <template v-if="numberGroupList.length>0">
                             <!-- <transition name="fade"> -->
                                 <div v-for="(item, idx) in numberGroupList" :key="idx" :draggable="true" :class="['group_item', model1.group_id === item.id ? 'group_active' : '']"  @click="changeGroup(item, idx)" @dragstart="dragStart(idx)" @dragover.prevent @drop="handleMoveSort(idx)">
@@ -953,7 +953,13 @@ export default {
         this.getPortNum();
         this.initNumberGroup();
         this.initNumberList();
-        this.cliHeight = document.documentElement.clientHeight-380;
+    },
+     mounted() {
+        this.setFullHeight();
+        window.addEventListener("resize", this.setFullHeight);
+    },
+    beforeDestroy() {
+        window.removeEventListener("resize", this.setFullHeight);
     },
     methods: {
         handleDisabled(row, inde){
@@ -962,6 +968,9 @@ export default {
         handleSelectionChange(row) {
             this.checkIdArry = row.map(item => { return item.id })
             this.checkAccount = row.map(item => { return item.account })
+        },
+        setFullHeight(){
+            this.cliHeight = document.documentElement.clientHeight-380;
         },
         rowCloseChange(row){
             let refsElTable = this.$refs.blockTable;
@@ -1922,7 +1931,7 @@ export default {
 
 .group_warp {
     width: 220px;
-    max-height: 550px;
+    //max-height: 550px;
     overflow-y: auto;
     flex-shrink: 0;
     flex-wrap: wrap;
